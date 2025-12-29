@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cuba 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .glass-dark { background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        /* Confetti */
+        @keyframes confetti { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .confetti-piece { position: absolute; width: 8px; height: 8px; top: -10px; animation: confetti 2.5s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen relative overflow-x-hidden selection:bg-blue-500/30">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 z-[100] bg-[url('https://images.unsplash.com/photo-1544015759-3d3cb0bc5d9d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center">
+        <div class="absolute inset-0 bg-slate-900/90 backdrop-blur-sm"></div>
+        
+        <div class="relative z-10 flex flex-col items-center justify-center h-full p-6 w-full max-w-5xl mx-auto">
+            
+            <div class="mb-10 text-center animate-in fade-in zoom-in duration-700">
+                <h1 id="login-title" class="text-3xl font-black tracking-tight text-white drop-shadow-md">Select Profile</h1>
+            </div>
+
+            <!-- STEP 1: GROUP SELECTOR -->
+            <div id="group-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl animate-in slide-in-from-bottom-8 duration-500">
+                
+                <!-- Kingston Crew -->
+                <div onclick="showMembers('kingston')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center shadow-lg group-hover:ring-4 ring-blue-500/30 transition-all">
+                        <i data-lucide="users" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-white">Kingston Crew</h3>
+                        <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Andre, Jenn & Co.</p>
+                    </div>
+                </div>
+
+                <!-- VIPs -->
+                <div onclick="showMembers('vips')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg group-hover:ring-4 ring-yellow-500/30 transition-all relative">
+                        <span class="text-4xl">👑</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-white">The VIPs</h3>
+                        <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Grandpa's 80th</p>
+                    </div>
+                </div>
+
+                <!-- The Lees -->
+                <div onclick="showMembers('lees')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center shadow-lg group-hover:ring-4 ring-purple-500/30 transition-all">
+                        <i data-lucide="users-2" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xl text-white">The Lee's & Co.</h3>
+                        <p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Windsor Group</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: MEMBER SELECTOR (Hidden by default) -->
+            <div id="member-selector" class="hidden w-full max-w-2xl">
+                <button onclick="backToGroups()" class="mb-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors mx-auto uppercase text-xs font-bold tracking-widest">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Groups
+                </button>
+
+                <!-- Kingston Members -->
+                <div id="list-kingston" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6 slide-up">
+                    <button onclick="login('Andre')" class="group flex flex-col items-center gap-3">
+                        <div class="w-24 h-24 rounded-lg bg-blue-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-blue-500/50 transition-all">A</div>
+                        <span class="font-bold text-slate-300 group-hover:text-white">Andre</span>
+                    </button>
+                    <button onclick="login('Jenn')" class="group flex flex-col items-center gap-3">
+                        <div class="w-24 h-24 rounded-lg bg-pink-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-pink-500/50 transition-all">J</div>
+                        <span class="font-bold text-slate-300 group-hover:text-white">Jenn</span>
+                    </button>
+                    <button onclick="login('Nolan')" class="group flex flex-col items-center gap-3">
+                        <div class="w-24 h-24 rounded-lg bg-green-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-green-500/50 transition-all">N</div>
+                        <span class="font-bold text-slate-300 group-hover:text-white">Nolan</span>
+                    </button>
+                    <button onclick="login('Sophie')" class="group flex flex-col items-center gap-3">
+                        <div class="w-24 h-24 rounded-lg bg-purple-500 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-purple-500/50 transition-all">S</div>
+                        <span class="font-bold text-slate-300 group-hover:text-white">Sophie</span>
+                    </button>
+                    <button onclick="login('Alaina')" class="group flex flex-col items-center gap-3 md:col-span-2">
+                        <div class="w-24 h-24 rounded-lg bg-indigo-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-indigo-500/50 transition-all">A</div>
+                        <span class="font-bold text-slate-300 group-hover:text-white">Alaina</span>
+                    </button>
+                </div>
+
+                <!-- VIP Members -->
+                <div id="list-vips" class="hidden grid grid-cols-2 gap-8 slide-up">
+                    <button onclick="login('Claude')" class="group flex flex-col items-center gap-3">
+                        <div class="w-28 h-28 rounded-lg bg-yellow-500 flex items-center justify-center text-4xl font-bold group-hover:ring-4 ring-yellow-500/50 transition-all">C</div>
+                        <span class="font-bold text-lg text-slate-300 group-hover:text-white">Claude</span>
+                    </button>
+                    <button onclick="login('Lala')" class="group flex flex-col items-center gap-3">
+                        <div class="w-28 h-28 rounded-lg bg-yellow-500 flex items-center justify-center text-4xl font-bold group-hover:ring-4 ring-yellow-500/50 transition-all">L</div>
+                        <span class="font-bold text-lg text-slate-300 group-hover:text-white">Lala</span>
+                    </button>
+                </div>
+
+                <!-- Lee Members -->
+                <div id="list-lees" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6 slide-up">
+                    <button onclick="login('Laura')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-purple-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-purple-500/50 transition-all">L</div><span class="font-bold text-slate-300 group-hover:text-white">Laura</span></button>
+                    <button onclick="login('Bryan')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-purple-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-purple-500/50 transition-all">B</div><span class="font-bold text-slate-300 group-hover:text-white">Bryan</span></button>
+                    <button onclick="login('Madeleine')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-teal-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-teal-500/50 transition-all">M</div><span class="font-bold text-slate-300 group-hover:text-white">Madeleine</span></button>
+                    <button onclick="login('Emma')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-teal-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-teal-500/50 transition-all">E</div><span class="font-bold text-slate-300 group-hover:text-white">Emma</span></button>
+                    <button onclick="login('Hannah')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-teal-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-teal-500/50 transition-all">H</div><span class="font-bold text-slate-300 group-hover:text-white">Hannah</span></button>
+                    <button onclick="login('Samantha')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-teal-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-teal-500/50 transition-all">S</div><span class="font-bold text-slate-300 group-hover:text-white">Samantha</span></button>
+                    <button onclick="login('Ryan')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-cyan-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-cyan-500/50 transition-all">R</div><span class="font-bold text-slate-300 group-hover:text-white">Ryan</span></button>
+                    <button onclick="login('Auntie')" class="group flex flex-col items-center gap-3"><div class="w-24 h-24 rounded-lg bg-cyan-600 flex items-center justify-center text-3xl font-bold group-hover:ring-4 ring-cyan-500/50 transition-all">A</div><span class="font-bold text-slate-300 group-hover:text-white">Auntie</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT (Hidden behind overlay) -->
+    <div class="relative min-h-screen pb-24">
+        <!-- Header -->
+        <header class="fixed top-0 inset-x-0 z-40 glass-dark">
+            <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+                <div onclick="switchView('home')" class="flex items-center gap-3 cursor-pointer">
+                    <div class="bg-blue-500/20 p-2 rounded-lg">
+                        <i data-lucide="palmtree" class="w-5 h-5 text-blue-400"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-tight text-white">Cuba 2026</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div id="user-pill" class="hidden md:flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                        <span id="user-name-display" class="text-xs font-bold text-slate-300">Guest</span>
+                    </div>
+                    <button onclick="toggleMenu()" class="text-slate-300 hover:text-white transition-colors">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Menu -->
+        <div id="mobile-menu" class="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-xl hidden flex-col transition-all duration-300">
+            <div class="p-6 flex justify-between items-center border-b border-white/10">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">Navigation</span>
+                <button onclick="toggleMenu()" class="text-white hover:text-blue-400 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-2">
+                <button onclick="switchView('home')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-blue-500/10 p-2 rounded-lg group-hover:bg-blue-500/20 transition-colors"><i data-lucide="star" class="text-blue-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">Dashboard</span>
+                </button>
+                <button onclick="switchView('team')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-pink-500/10 p-2 rounded-lg group-hover:bg-pink-500/20 transition-colors"><i data-lucide="users" class="text-pink-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">The Crew</span>
+                </button>
+                <button onclick="switchView('game')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-orange-500/10 p-2 rounded-lg group-hover:bg-orange-500/20 transition-colors"><i data-lucide="gamepad-2" class="text-orange-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">Spanish Challenge</span>
+                </button>
+                <button onclick="switchView('checklist')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-green-500/10 p-2 rounded-lg group-hover:bg-green-500/20 transition-colors"><i data-lucide="check-square" class="text-green-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">Pack It</span>
+                </button>
+                <button onclick="switchView('itinerary')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-purple-500/10 p-2 rounded-lg group-hover:bg-purple-500/20 transition-colors"><i data-lucide="map-pin" class="text-purple-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">Timeline</span>
+                </button>
+                <button onclick="switchView('details')" class="w-full text-left p-4 rounded-xl hover:bg-white/5 flex items-center gap-4 transition-all group">
+                    <div class="bg-teal-500/10 p-2 rounded-lg group-hover:bg-teal-500/20 transition-colors"><i data-lucide="plane" class="text-teal-400 w-5 h-5"></i></div>
+                    <span class="font-bold text-lg text-slate-200">Logistics</span>
+                </button>
+                <button onclick="logout()" class="mt-8 w-full text-left px-4 py-2 text-sm font-medium text-red-400 hover:text-red-300 flex items-center gap-2">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Switch Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- CONTENT AREA -->
+        <main class="max-w-3xl mx-auto pt-24 px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div id="error-banner" class="hidden bg-red-500/90 backdrop-blur text-white p-4 rounded-xl mb-6 text-sm font-bold text-center shadow-lg border border-red-400/20"></div>
+
+            <!-- VIEW: HOME -->
+            <div id="view-home" class="space-y-8">
+                
+                <!-- COUNTDOWN CLOCK -->
+                <div class="glass rounded-3xl p-8 text-center relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                    <p class="text-blue-300 text-xs font-bold uppercase tracking-widest mb-6">Time to Takeoff</p>
+                    
+                    <div id="countdown-wrapper" class="flex justify-center gap-2 sm:gap-4">
+                        <!-- DAYS -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 glass bg-slate-800/50 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                                <span id="cd-days" class="text-2xl sm:text-3xl font-black text-white font-mono">0</span>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Days</span>
+                        </div>
+                        <!-- HOURS -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 glass bg-slate-800/50 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                                <span id="cd-hours" class="text-2xl sm:text-3xl font-black text-white font-mono">0</span>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Hrs</span>
+                        </div>
+                        <!-- MINS -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 glass bg-slate-800/50 rounded-xl flex items-center justify-center mb-2 shadow-lg">
+                                <span id="cd-mins" class="text-2xl sm:text-3xl font-black text-white font-mono">0</span>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">Mins</span>
+                        </div>
+                        <!-- SECS -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 sm:w-20 sm:h-20 glass bg-slate-800/50 rounded-xl flex items-center justify-center mb-2 shadow-lg border border-blue-500/30">
+                                <span id="cd-secs" class="text-2xl sm:text-3xl font-black text-blue-400 font-mono">0</span>
+                            </div>
+                            <span class="text-[10px] sm:text-xs font-bold text-blue-400 uppercase tracking-wider">Secs</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-3xl p-6 relative">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="font-bold text-white flex items-center gap-2">
+                            <i data-lucide="message-circle" class="text-blue-400 w-5 h-5"></i> Crew Chat
+                        </h3>
+                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    </div>
+                    <div id="chat-container" class="space-y-3 mb-4 h-64 overflow-y-auto pr-2 no-scrollbar">
+                        <div class="flex items-center justify-center h-full text-slate-500 text-sm italic">Syncing with Firebase...</div>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="chat-input" placeholder="Type a message..." class="w-full bg-slate-800/50 border border-white/10 rounded-xl pl-4 pr-12 py-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-slate-800 transition-all">
+                        <button onclick="postChat()" class="absolute right-2 top-2 p-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors"><i data-lucide="send" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: TEAM (THE CREW) -->
+            <div id="view-team" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white mb-6">The Crew</h2>
+                
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-sm font-bold text-blue-400 uppercase tracking-widest mb-4">Kingston Crew</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Andre</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Jenn</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Nolan</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Sophie</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200 flex items-center gap-1"><i data-lucide="plane" class="w-3 h-3"></i> Alaina</span>
+                    </div>
+                </div>
+
+                <div class="glass rounded-3xl p-6 border-l-4 border-yellow-500">
+                    <h3 class="text-sm font-bold text-yellow-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i data-lucide="crown" class="w-4 h-4"></i> VIPs (80th Birthday)</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-2 bg-yellow-900/40 rounded-full text-sm text-yellow-100 border border-yellow-500/20">Grandpa Welsh</span>
+                        <span class="px-4 py-2 bg-yellow-900/40 rounded-full text-sm text-yellow-100 border border-yellow-500/20">Grandma Welsh</span>
+                    </div>
+                </div>
+
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-sm font-bold text-purple-400 uppercase tracking-widest mb-4">The Lee's & Co.</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Laura</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Bryan</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Madeleine</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Emma</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Hannah</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200">Samantha</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200 flex items-center gap-1">Ryan (19)</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm text-slate-200 flex items-center gap-1">Auntie</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: GAME -->
+            <div id="view-game" class="hidden h-full">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Leaderboard</h2>
+                    <div class="bg-yellow-500/20 px-3 py-1 rounded-full border border-yellow-500/30 flex items-center gap-2">
+                        <i data-lucide="trophy" class="w-3 h-3 text-yellow-400"></i>
+                        <span class="text-xs font-bold text-yellow-200">Top Agents</span>
+                    </div>
+                </div>
+                <div class="glass rounded-3xl p-4 mb-8">
+                    <div id="leaderboard-list" class="space-y-1">
+                        <div class="p-3 text-center text-slate-500 text-xs">Loading data...</div>
+                    </div>
+                </div>
+                <div id="game-intro" class="glass rounded-3xl p-8 text-center">
+                    <div class="w-20 h-20 bg-slate-800 rounded-full mx-auto flex items-center justify-center text-4xl mb-6 shadow-inner">🇪🇸</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Speed Round</h3>
+                    <p class="text-slate-400 text-sm mb-8">10 Questions. No guessing. Finish to score.</p>
+                    <button onclick="startRound()" class="w-full bg-green-500 hover:bg-green-400 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-500/20 transition-all transform active:scale-95">Start Mission</button>
+                </div>
+                <div id="game-board" class="hidden flex-col">
+                    <div class="flex justify-between text-slate-400 text-sm font-mono mb-4 px-2">
+                        <span>Q: <span id="q-num" class="text-white">1</span>/10</span>
+                        <span>SCORE: <span id="current-score" class="text-green-400">0</span></span>
+                    </div>
+                    <div class="bg-white rounded-3xl p-10 text-center shadow-2xl mb-6">
+                        <div id="q-icon" class="text-6xl mb-6">🍦</div>
+                        <h2 id="q-word" class="text-4xl font-black text-slate-900 tracking-tight">Ice Cream</h2>
+                    </div>
+                    <div id="options-container" class="grid gap-3"></div>
+                </div>
+                <div id="game-win" class="hidden glass rounded-3xl p-8 text-center">
+                    <div class="text-6xl mb-4">🎉</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Round Complete</h3>
+                    <div class="text-4xl font-black text-green-400 mb-8"><span id="final-score">0</span>/10</div>
+                    <button onclick="resetGame()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-xl transition">Continue</button>
+                </div>
+            </div>
+
+            <!-- VIEW: CHECKLIST -->
+            <div id="view-checklist" class="hidden">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2"><i data-lucide="check-square" class="text-teal-400 w-6 h-6"></i> Mission Gear</h2>
+                
+                <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="block mb-6 glass p-4 rounded-xl hover:bg-white/10 transition-colors group flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-green-500/20 p-2 rounded-lg text-green-400"><i data-lucide="file-spreadsheet" class="w-6 h-6"></i></div>
+                        <div>
+                            <h3 class="font-bold text-white">Master Spreadsheet</h3>
+                            <p class="text-xs text-slate-400">View Full Item List</p>
+                        </div>
+                    </div>
+                    <i data-lucide="external-link" class="text-slate-500 group-hover:text-white transition-colors w-5 h-5"></i>
+                </a>
+
+                <div class="glass rounded-3xl p-6">
+                    <div class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-6 text-center">Live Sync Active</div>
+                    <div id="checklist-container" class="space-y-3">
+                        <div class="text-center text-slate-500 text-sm">Syncing...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ITINERARY -->
+            <div id="view-itinerary" class="hidden space-y-4">
+                <h2 class="text-2xl font-bold text-white mb-6">Timeline</h2>
+                <div id="itinerary-list" class="space-y-4 pb-10"></div>
+            </div>
+
+            <!-- VIEW: DETAILS -->
+            <div id="view-details" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white mb-6">Logistics</h2>
+                
+                <!-- DOCUMENT VAULT -->
+                <div class="mb-6">
+                    <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="flex items-center justify-between glass p-4 rounded-xl hover:bg-white/10 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-500/20 p-2 rounded-lg text-blue-400"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">View Flight Ticket (PDF)</h3>
+                                <p class="text-xs text-slate-400">Secure Document Link</p>
+                            </div>
+                        </div>
+                        <i data-lucide="external-link" class="text-slate-500 group-hover:text-white transition-colors w-5 h-5"></i>
+                    </a>
+                </div>
+
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-sm font-bold text-blue-400 uppercase tracking-widest mb-4">Flight Manifest</h3>
+                    <div class="flex justify-between items-center text-white mb-2">
+                        <div class="text-center"><span class="block text-3xl font-black">YYZ</span><span class="text-xs text-slate-400">10:40</span></div>
+                        <div class="flex flex-col items-center px-4"><i data-lucide="plane" class="w-5 h-5 text-slate-500"></i><div class="w-20 h-px bg-slate-700 my-2"></div><span class="text-xs text-slate-500">TS556</span></div>
+                        <div class="text-center"><span class="block text-3xl font-black">VRA</span><span class="text-xs text-slate-400">14:15</span></div>
+                    </div>
+                    <div class="bg-slate-800/50 rounded-lg p-3 mt-4 text-center"><span class="text-xs text-slate-400">Feb 14, 2026 • Air Transat</span></div>
+                </div>
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-sm font-bold text-purple-400 uppercase tracking-widest mb-4">Base Camp</h3>
+                    <div class="flex items-start gap-4">
+                        <div class="bg-white/10 p-3 rounded-xl"><i data-lucide="hotel" class="w-6 h-6 text-white"></i></div>
+                        <div>
+                            <h4 class="font-bold text-white text-lg">Iberostar Selection</h4>
+                            <p class="text-slate-400 text-sm">Varadero, Cuba</p>
+                            <div class="flex gap-2 mt-2"><span class="px-2 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded">All Inclusive</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- APP LOGIC -->
+    <script type="module">
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXMvETONqUJI66jCqSAL1s6UhPG5HmVYE",
+            authDomain: "cuba-2026.firebaseapp.com",
+            databaseURL: "https://cuba-2026-default-rtdb.firebaseio.com",
+            projectId: "cuba-2026",
+            storageBucket: "cuba-2026.firebasestorage.app",
+            messagingSenderId: "956837409462",
+            appId: "1:956837409462:web:5bf7d01812b57b67616c17"
+        };
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, updateDoc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        let db, auth;
+        let currentUser = localStorage.getItem('cubaUser');
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            signInAnonymously(auth).then(() => initRealtimeListeners()).catch(e => {
+                if(e.code === 'auth/operation-not-allowed') showError("Auth Error: Enable Anonymous Auth in Firebase Console.");
+            });
+        } catch (e) { console.error("Init Error", e); }
+
+        function showError(msg) {
+            const banner = document.getElementById('error-banner');
+            banner.innerText = msg;
+            banner.classList.remove('hidden');
+        }
+
+        // --- AUTH & GROUP LOGIC ---
+        window.showMembers = (group) => {
+            document.getElementById('group-selector').classList.add('hidden');
+            document.getElementById('member-selector').classList.remove('hidden');
+            ['kingston', 'vips', 'lees'].forEach(g => document.getElementById(`list-${g}`).classList.add('hidden'));
+            document.getElementById(`list-${group}`).classList.remove('hidden');
+            document.getElementById('login-title').innerText = "Select Profile";
+        };
+
+        window.backToGroups = () => {
+            document.getElementById('member-selector').classList.add('hidden');
+            document.getElementById('group-selector').classList.remove('hidden');
+            document.getElementById('login-title').innerText = "Select Profile";
+        };
+
+        window.login = (name) => {
+            currentUser = name;
+            localStorage.setItem('cubaUser', name);
+            document.getElementById('login-overlay').classList.add('hidden');
+            document.getElementById('user-name-display').innerText = name;
+            document.getElementById('user-pill').classList.remove('hidden');
+        };
+        window.logout = () => { localStorage.removeItem('cubaUser'); location.reload(); };
+        if(currentUser) window.login(currentUser);
+
+        // --- GLOBAL STATE ---
+        window.gameState = { questions: [], currentQ: 0, score: 0, active: false };
+        const checklistData = ["Passports 🛂", "Small Bills ($1s) 💵", "Sunscreen 🧴", "Bug Spray 🦟", "Advil/Tylenol 💊", "Floaties 🛟", "Chargers 🔋", "Headphones 🎧", "Travel Insurance 📄", "Water Bottle 💧"];
+        const vocab = [{en:"Ice Cream",es:"Helado",icon:"🍦",wrong:["Pollo","Agua"]},{en:"Pool",es:"Piscina",icon:"🏊",wrong:["Playa","Baño"]},{en:"Beach",es:"Playa",icon:"🏖️",wrong:["Piscina","Sol"]},{en:"Chicken",es:"Pollo",icon:"🍗",wrong:["Gato","Perro"]},{en:"Bathroom",es:"Baño",icon:"🚽",wrong:["Banco","Bar"]},{en:"Water",es:"Agua",icon:"💧",wrong:["Jugo","Leche"]},{en:"Hello",es:"Hola",icon:"👋",wrong:["Adios","Gracias"]},{en:"Thank You",es:"Gracias",icon:"🙏",wrong:["Por Favor","Hola"]},{en:"Friend",es:"Amigo",icon:"🤝",wrong:["Enemigo","Casa"]},{en:"Sun",es:"Sol",icon:"☀️",wrong:["Luna","Mar"]}];
+        // Friendly Itinerary Data
+        const itineraryData = [
+            {day:"Fri Feb 13",title:"Heading Out",icon:"hotel",color:"text-blue-400",desc:"Drive to YYZ. Check in Marriott. Pizza Night.",highlight:"Pizza"},
+            {day:"Sat Feb 14",title:"Flight to Cuba",icon:"plane",color:"text-blue-400",desc:"TS556 -> Varadero. Shuttle to Resort.",highlight:"Vacation!"},
+            {day:"Sun Feb 15",title:"Pool Day",icon:"sun",color:"text-orange-400",desc:"Scout the best pool spots & buffet.",highlight:"Relax"},
+            {day:"Mon Feb 16",title:"Beach Day",icon:"umbrella",color:"text-teal-400",desc:"Ocean swim & Kids Club sign up.",highlight:"Beach"},
+            {day:"Tue Feb 17",title:"Grandpa's 80th!",icon:"crown",color:"text-yellow-400",desc:"The Main Event. Big family dinner.",highlight:"Party"},
+            {day:"Wed Feb 18",title:"Sandcastle Comp",icon:"palmtree",color:"text-green-400",desc:"Kingston vs Lee's. Who builds it best?",highlight:"Fun"},
+            {day:"Sat Feb 21",title:"Flying Home",icon:"plane",color:"text-blue-400",desc:"TS557 -> YYZ. Overnight Marriott.",highlight:"Home"}
+        ];
+
+        // --- NAVIGATION ---
+        window.switchView = (viewName) => {
+            ['home','game','checklist','itinerary','details','team'].forEach(v => document.getElementById(`view-${v}`)?.classList.add('hidden'));
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            window.scrollTo(0,0);
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('mobile-menu').classList.remove('flex');
+        };
+        window.toggleMenu = () => { const m = document.getElementById('mobile-menu'); m.classList.toggle('hidden'); m.classList.toggle('flex'); };
+
+        // --- GAME LOGIC ---
+        window.startRound = () => {
+            const shuffled = [...vocab].sort(() => 0.5 - Math.random());
+            window.gameState.questions = shuffled.slice(0, 10);
+            window.gameState.currentQ = 0;
+            window.gameState.score = 0;
+            window.gameState.active = true;
+            document.getElementById('game-intro').classList.add('hidden');
+            document.getElementById('game-board').classList.remove('hidden');
+            document.getElementById('game-board').classList.add('flex');
+            renderQuestion();
+        };
+
+        function renderQuestion() {
+            const q = window.gameState.questions[window.gameState.currentQ];
+            document.getElementById('q-num').innerText = window.gameState.currentQ + 1;
+            document.getElementById('current-score').innerText = window.gameState.score;
+            document.getElementById('q-icon').innerText = q.icon;
+            document.getElementById('q-word').innerText = q.en;
+            
+            const opts = [q.es, ...q.wrong].sort(() => 0.5 - Math.random());
+            const c = document.getElementById('options-container');
+            c.innerHTML = '';
+            
+            opts.forEach(o => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm transition active:scale-95";
+                btn.innerText = o;
+                btn.onclick = () => handleAnswer(o === q.es, btn);
+                c.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(isCorrect, btn) {
+            if(!window.gameState.active) return;
+            if(isCorrect) {
+                btn.classList.replace('bg-slate-100','bg-green-500');
+                btn.classList.add('text-white');
+                window.gameState.score++;
+            } else {
+                btn.classList.replace('bg-slate-100','bg-red-500');
+                btn.classList.add('text-white');
+            }
+            window.gameState.active = false;
+            setTimeout(() => {
+                window.gameState.currentQ++;
+                if(window.gameState.currentQ >= 10) endRound();
+                else { window.gameState.active = true; renderQuestion(); }
+            }, 600);
+        }
+
+        async function endRound() {
+            document.getElementById('game-board').classList.add('hidden');
+            document.getElementById('game-board').classList.remove('flex');
+            document.getElementById('game-win').classList.remove('hidden');
+            document.getElementById('final-score').innerText = window.gameState.score;
+            if(db && currentUser) {
+                try {
+                    await setDoc(doc(db, "leaderboard", currentUser), { score: increment(window.gameState.score) }, { merge: true });
+                } catch(e) { console.warn("Score save failed", e); }
+            }
+            for(let i=0; i<40; i++) {
+                const c = document.createElement('div');
+                c.className='confetti-piece';
+                c.style.left = Math.random()*100+'vw';
+                c.style.backgroundColor = ['#ffd700','#ff0000','#00ff00'][Math.floor(Math.random()*3)];
+                document.body.appendChild(c);
+                setTimeout(()=>c.remove(), 2500);
+            }
+        }
+        window.resetGame = () => {
+            document.getElementById('game-win').classList.add('hidden');
+            document.getElementById('game-intro').classList.remove('hidden');
+        };
+
+        // --- LISTENERS ---
+        function initRealtimeListeners() {
+            onSnapshot(query(collection(db, "chat"), orderBy("timestamp", "desc"), limit(20)), snap => {
+                const c = document.getElementById('chat-container');
+                c.innerHTML = '';
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const div = document.createElement('div');
+                    div.className = "bg-white/5 p-3 rounded-xl text-sm border border-white/5";
+                    div.innerHTML = `<span class="font-bold text-blue-400 block text-xs mb-1">${d.user}</span><span class="text-slate-200">${d.text}</span>`;
+                    c.appendChild(div);
+                });
+            }, err => { if(err.code === 'permission-denied') showError("Database Permission Error: Check Firebase Console Rules"); });
+
+            onSnapshot(query(collection(db, "leaderboard"), orderBy("score", "desc")), snap => {
+                const l = document.getElementById('leaderboard-list');
+                l.innerHTML = '';
+                let rank = 1;
+                snap.forEach(doc => {
+                    const d = doc.data();
+                    const row = document.createElement('div');
+                    row.className = "flex justify-between items-center p-3 hover:bg-white/5 rounded-lg transition";
+                    row.innerHTML = `<div class="flex items-center gap-3"><span class="font-mono text-slate-500 text-xs w-4">#${rank++}</span><span class="font-bold text-slate-200">${doc.id}</span></div><span class="font-mono font-bold text-green-400">${d.score}</span>`;
+                    l.appendChild(row);
+                });
+            });
+
+            onSnapshot(collection(db, "checklist"), snap => {
+                const c = document.getElementById('checklist-container');
+                c.innerHTML = '';
+                checklistData.forEach(item => {
+                    const id = item.replace(/[^a-zA-Z0-9]/g, '');
+                    let checked = false;
+                    snap.forEach(d => { if(d.id === id && d.data().checked) checked = true; });
+                    
+                    const div = document.createElement('div');
+                    div.onclick = () => toggleCheck(id, !checked);
+                    div.className = `flex items-center gap-3 p-4 rounded-xl cursor-pointer border transition-all ${checked ? 'bg-green-500/10 border-green-500/30' : 'bg-white/5 border-white/5 hover:bg-white/10'}`;
+                    div.innerHTML = `
+                        <div class="w-6 h-6 rounded-md border-2 ${checked ? 'bg-green-500 border-green-500' : 'border-slate-500'} flex items-center justify-center transition-colors">
+                            ${checked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
+                        </div>
+                        <span class="font-medium ${checked ? 'text-green-400 line-through' : 'text-slate-200'}">${item}</span>
+                    `;
+                    c.appendChild(div);
+                });
+                lucide.createIcons();
+            });
+        }
+
+        window.postChat = async () => {
+            const i = document.getElementById('chat-input');
+            const t = i.value.trim();
+            if(!t || !db) return;
+            try { await addDoc(collection(db, "chat"), { user: currentUser, text: t, timestamp: new Date() }); i.value=''; } catch(e){}
+        };
+
+        window.toggleCheck = async (id, val) => {
+            if(!db) return;
+            await setDoc(doc(db, "checklist", id), { checked: val }, { merge: true });
+        };
+
+        // --- INIT UI ---
+        function renderItinerary() {
+            const c = document.getElementById('itinerary-list');
+            itineraryData.forEach(i => {
+                const d = document.createElement('div');
+                d.className = "glass rounded-2xl p-5 flex gap-4";
+                d.innerHTML = `
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="${i.icon}" class="${i.color} w-6 h-6"></i>
+                        <div class="w-px h-full bg-white/10 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-white text-lg">${i.title}</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">${i.day}</p>
+                        <p class="text-slate-300 text-sm leading-relaxed">${i.desc}</p>
+                        ${i.day.includes("Fri Feb 13") ? '<p class="text-xs text-yellow-400 mt-2 font-bold bg-yellow-900/30 p-2 rounded">Note: Lee Group & VIPs arrive today!</p>' : ''}
+                    </div>
+                `;
+                c.appendChild(d);
+            });
+        }
+
+        function updateCountdown() {
+            const target = new Date("2026-02-13T00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('cd-days').innerText = days;
+            document.getElementById('cd-hours').innerText = hours;
+            document.getElementById('cd-mins').innerText = minutes;
+            document.getElementById('cd-secs').innerText = seconds;
+        }
+
+        window.onload = function() {
+            updateCountdown();
+            setInterval(updateCountdown, 1000); // Live Tick
+            renderItinerary();
+            lucide.createIcons();
+        }
+    </script>
+</body>
+          </html>
