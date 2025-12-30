@@ -90,7 +90,7 @@
                 </div>
             </div>
             
-            <!-- Quick Timeline Preview -->
+            <!-- Trip Plan Preview -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Up Next</h3>
@@ -147,10 +147,141 @@
             </div>
         </div>
 
-        <!-- TAB: ITINERARY (FULL) -->
+        <!-- TAB: ITINERARY (FULL - HARDCODED FAILSAFE) -->
         <div id="tab-itinerary" class="hidden p-6 space-y-6 fade-in">
             <h2 class="text-2xl font-bold text-slate-800 mb-2">Full Timeline</h2>
-            <div id="itinerary-list" class="space-y-4 pb-20"></div>
+            <div id="itinerary-list" class="space-y-4 pb-20">
+                
+                <!-- Fri 13 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="hotel" class="text-blue-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Heading Out</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Fri Feb 13</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Drive to YYZ. Check in Marriott. Pizza Night.</p>
+                    </div>
+                </div>
+
+                <!-- Sat 14 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="plane" class="text-blue-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Flight Day! ✈️</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Sat Feb 14</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">TS556 -> Varadero. Shuttle to Resort. Arrival!</p>
+                    </div>
+                </div>
+
+                <!-- Sun 15 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="sun" class="text-orange-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Pool Recon</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Sun Feb 15</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Scout the best pool spots & buffet locations.</p>
+                    </div>
+                </div>
+
+                <!-- Mon 16 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="umbrella" class="text-teal-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Beach Day</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Mon Feb 16</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Ocean swim & Kids Club sign up.</p>
+                    </div>
+                </div>
+
+                <!-- Tue 17 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="crown" class="text-yellow-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Grandpa's 80th! 🎂</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Tue Feb 17</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">The Main Event. Big family dinner celebration.</p>
+                    </div>
+                </div>
+
+                <!-- Wed 18 -->
+                <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="palmtree" class="text-green-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Sandcastle Wars</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Wed Feb 18</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Kingston Crew vs Lee's. Who builds it best?</p>
+                    </div>
+                </div>
+
+                 <!-- Thu 19 -->
+                 <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="camera" class="text-purple-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Free Day</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Thu Feb 19</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Relax at swim-up bar or excursion.</p>
+                    </div>
+                </div>
+
+                 <!-- Fri 20 -->
+                 <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="heart" class="text-red-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Last Sunset</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Fri Feb 20</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Final full day. Group photos on beach.</p>
+                    </div>
+                </div>
+
+                 <!-- Sat 21 -->
+                 <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="plane" class="text-blue-400 w-6 h-6"></i>
+                        <div class="w-px h-full bg-slate-100 my-2"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Return Home</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Sat Feb 21</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">TS557 -> YYZ. Overnight Marriott.</p>
+                    </div>
+                </div>
+
+                 <!-- Sun 22 -->
+                 <div class="bg-white p-5 rounded-2xl flex gap-4 border border-slate-100 shadow-sm">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1">
+                        <i data-lucide="home" class="text-slate-400 w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-lg">Home</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Sun Feb 22</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">Breakfast and drive back to Kingston.</p>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
         <!-- TAB: CHAT -->
@@ -167,7 +298,7 @@
             </div>
         </div>
 
-        <!-- TAB: FUN (FIXED GAME) -->
+        <!-- TAB: FUN -->
         <div id="tab-fun" class="hidden p-6 space-y-6 fade-in">
             <div class="text-center mb-6"><h2 class="text-3xl font-black text-slate-800">Lingo Lizard 🦎</h2><p class="text-sm text-slate-500">Level up to prove your skills!</p></div>
             <div id="level-grid" class="grid gap-3 mb-8"></div> <!-- Levels Injected -->
@@ -177,36 +308,17 @@
             </div>
         </div>
 
-        <!-- GAME MODAL (REBUILT) -->
+        <!-- Game Modal -->
         <div id="game-modal" class="fixed inset-0 z-50 bg-slate-900 flex flex-col p-6 hidden">
             <button onclick="closeGame()" class="self-start text-white/50 hover:text-white mb-6 flex items-center gap-2"><i data-lucide="arrow-left" class="w-5 h-5"></i> Quit</button>
-            
-            <div id="game-board-container" class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
-                <!-- Score Header -->
-                <div class="flex justify-between text-slate-400 font-mono mb-4 text-sm">
-                    <span>LEVEL <span id="game-level-display" class="text-white">1</span></span>
-                    <span>SCORE: <span id="current-score" class="text-green-400">0</span>/10</span>
-                </div>
-                
-                <!-- Question Card -->
+            <div class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
+                <div class="flex justify-between text-slate-400 font-mono mb-4 text-sm"><span>LEVEL <span id="game-level" class="text-white">1</span></span><span>SCORE: <span id="current-score" class="text-green-400">0</span>/10</span></div>
                 <div class="bg-white rounded-3xl p-8 text-center mb-6 shadow-2xl relative">
                     <button onclick="playCurrentAudio()" class="absolute top-4 right-4 text-blue-400 hover:text-blue-600"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
-                    <div class="text-6xl mb-4" id="q-icon">❓</div>
-                    <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word">Loading...</h2>
+                    <div class="text-6xl mb-4" id="q-icon"></div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word"></h2>
                 </div>
-                
-                <!-- Options -->
-                <div id="options-container" class="grid gap-3">
-                    <!-- Buttons Injected Here -->
-                </div>
-            </div>
-
-            <!-- Win Screen (Hidden inside modal) -->
-            <div id="game-win-screen" class="hidden flex-col items-center justify-center h-full text-center">
-                <div class="text-6xl mb-4">🎉</div>
-                <h2 class="text-3xl font-bold mb-2 text-white">Round Over!</h2>
-                <p class="text-xl text-slate-300 mb-8">Score: <span id="final-score">0</span>/10</p>
-                <button onclick="closeGame()" class="bg-blue-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:scale-105 transition-transform">Continue</button>
+                <div id="options-container" class="grid gap-3"></div>
             </div>
         </div>
 
@@ -272,6 +384,7 @@
             if(db) {
                 const snap = await getDoc(doc(db, "users", name));
                 if(snap.exists()) completedLevels = snap.data().completedLevels || [];
+                // If on game tab, refresh
                 if(!document.getElementById('tab-fun').classList.contains('hidden')) renderLevels();
             }
         };
@@ -286,34 +399,11 @@
             if(t==='fun') renderLevels();
         };
 
-        // --- FULL ITINERARY ---
-        const itineraryData = [
-            {day:"Fri Feb 13",title:"Heading Out",icon:"hotel",color:"text-blue-400",desc:"Drive to YYZ. Check in Marriott. Pizza Night."},
-            {day:"Sat Feb 14",title:"Flight Day",icon:"plane",color:"text-blue-400",desc:"TS556 -> Varadero. Shuttle to Resort. Arrival!"},
-            {day:"Sun Feb 15",title:"Pool Recon",icon:"sun",color:"text-orange-400",desc:"Scout the best pool spots & buffet locations."},
-            {day:"Mon Feb 16",title:"Beach Day",icon:"umbrella",color:"text-teal-400",desc:"Ocean swim & Kids Club sign up."},
-            {day:"Tue Feb 17",title:"Grandpa's 80th!",icon:"crown",color:"text-yellow-400",desc:"The Main Event. Big family dinner celebration."},
-            {day:"Wed Feb 18",title:"Sandcastle Wars",icon:"palmtree",color:"text-green-400",desc:"Kingston Crew vs Lee's. Who builds it best?"},
-            {day:"Thu Feb 19",title:"Free Day",icon:"camera",color:"text-purple-400",desc:"Relax at swim-up bar or excursion."},
-            {day:"Fri Feb 20",title:"Last Sunset",icon:"heart",color:"text-red-400",desc:"Final full day. Group photos on beach."},
-            {day:"Sat Feb 21",title:"Return Home",icon:"plane",color:"text-blue-400",desc:"TS557 -> YYZ. Overnight Marriott."},
-            {day:"Sun Feb 22",title:"Home",icon:"home",color:"text-slate-400",desc:"Breakfast and drive back to Kingston."}
-        ];
-
-        function renderItinerary() {
-            document.getElementById('itinerary-list').innerHTML = itineraryData.map(i => `
-                <div class="glass rounded-2xl p-5 flex gap-4 border border-slate-100 bg-white">
-                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1"><i data-lucide="${i.icon}" class="${i.color} w-6 h-6"></i><div class="w-px h-full bg-slate-100 my-2"></div></div>
-                    <div><h4 class="font-bold text-slate-800 text-lg">${i.title}</h4><p class="text-xs font-bold text-slate-400 uppercase mb-2">${i.day}</p><p class="text-slate-500 text-sm leading-relaxed">${i.desc}</p></div>
-                </div>
-            `).join('');
-        }
-
         // --- GAME LOGIC ---
         const questionBank = {
-            1: [{q:"Ice Cream",a:"Helado",w:["Zapato","Gato"]}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"]}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"]}, {q:"Cat",a:"Gato",w:["Pato","Zapato"]}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"]}, {q:"Sun",a:"Sol",w:["Luna","Mar"]}, {q:"Water",a:"Agua",w:["Fuego","Tierra"]}, {q:"Friend",a:"Amigo",w:["Enemigo","Casa"]}, {q:"Juice",a:"Jugo",w:["Leche","Cafe"]}, {q:"Hello",a:"Hola",w:["Adios","Gracias"]}],
-            2: [{q:"Where is the bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"]}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"]}, {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"]}, {q:"Uncle Bryan sings",a:"Tío Bryan canta",w:["Tío Bryan duerme","Tío Bryan come tacos"]}, {q:"Aunt Laura knows everyone",a:"Tía Laura conoce a todos",w:["Tía Laura conoce a nadie","Tía Laura come pizza"]}, {q:"The iguana dances",a:"La iguana baila",w:["La iguana come","La iguana duerme"]}, {q:"Chicken with rice",a:"Pollo con arroz",w:["Gato con arroz","Zapato con arroz"]}],
-            3: [{q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"]}, {q:"Sophie draws a cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"]}, {q:"Nolan climbs the tree",a:"Nolan sube el árbol",w:["Nolan come el árbol","Nolan duerme en el árbol"]}, {q:"Grandpa is the king",a:"El abuelo es el rey",w:["El abuelo es el gato","El abuelo tiene hambre"]}, {q:"I like to swim",a:"Me gusta nadar",w:["Me gusta volar","Me gusta correr"]}]
+            1: [{q:"Ice Cream",a:"Helado",w:["Zapato","Gato"]}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"]}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"]}, {q:"Cat",a:"Gato",w:["Pato","Zapato"]}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"]}],
+            2: [{q:"Where is the bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"]}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"]}, {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"]}, {q:"Uncle Bryan sings",a:"Tío Bryan canta",w:["Tío Bryan duerme","Tío Bryan come tacos"]}, {q:"Aunt Laura knows everyone",a:"Tía Laura conoce a todos",w:["Tía Laura conoce a nadie","Tía Laura come pizza"]}],
+            3: [{q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"]}, {q:"Sophie draws a cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"]}, {q:"Nolan climbs the tree",a:"Nolan sube el árbol",w:["Nolan come el árbol","Nolan duerme en el árbol"]}, {q:"Grandpa is the king",a:"El abuelo es el rey",w:["El abuelo es el gato","El abuelo tiene hambre"]}]
         };
         const levels = [{id:1, title:"Rookie", icon:"👶", color:"green", req:0}, {id:2, title:"Explorer", icon:"🤠", color:"blue", req:1}, {id:3, title:"Legend", icon:"🔥", color:"purple", req:2}];
         let activeLvl, qIdx, score, currentQs;
@@ -326,23 +416,13 @@
             }).join('');
         }
 
-        window.playLevel = (id) => { 
-            activeLvl = id; 
-            currentQs = [...questionBank[id]].sort(()=>0.5-Math.random()).slice(0,10); 
-            qIdx = 0; score = 0; 
-            document.getElementById('game-modal').classList.remove('hidden'); 
-            document.getElementById('game-board-container').classList.remove('hidden');
-            document.getElementById('game-win-screen').classList.add('hidden');
-            document.getElementById('game-win-screen').classList.remove('flex');
-            renderQuestion(); 
-        };
-
+        window.playLevel = (id) => { activeLvl = id; currentQs = [...questionBank[id]].sort(()=>0.5-Math.random()).slice(0,10); qIdx = 0; score = 0; document.getElementById('game-modal').classList.remove('hidden'); document.getElementById('game-ui').classList.remove('hidden'); renderQ(); };
         window.closeGame = () => { document.getElementById('game-modal').classList.add('hidden'); renderLevels(); };
         
-        function renderQuestion() {
+        function renderQ() {
             if (qIdx >= currentQs.length) { finishGame(); return; }
             const q = currentQs[qIdx];
-            document.getElementById('game-level-display').innerText = activeLvl; document.getElementById('current-score').innerText = score; document.getElementById('q-word').innerText = q.q;
+            document.getElementById('game-level').innerText = activeLvl; document.getElementById('current-score').innerText = score; document.getElementById('q-word').innerText = q.q;
             const c = document.getElementById('options-container'); c.innerHTML = '';
             [q.a, ...q.w].sort(()=>0.5-Math.random()).forEach(o => {
                 const btn = document.createElement('button');
@@ -353,27 +433,23 @@
         }
 
         function handleAnswer(correct, btn) {
-            btn.className = correct ? "bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm" : "bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm";
-            if(correct) { score++; playAudio(currentQs[qIdx].a); }
-            setTimeout(() => { qIdx++; renderQuestion(); }, 1000);
+            if(correct) { btn.className="bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm"; score++; playAudio(currentQs[qIdx].a); } 
+            else { btn.className="bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm"; }
+            setTimeout(() => { qIdx++; renderQ(); }, 1000);
         }
 
         window.playCurrentAudio = () => playAudio(currentQs[qIdx].a);
         function playAudio(txt) { const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-ES'; window.speechSynthesis.speak(u); }
 
         async function finishGame() {
-            document.getElementById('game-board-container').classList.add('hidden');
-            document.getElementById('game-win-screen').classList.remove('hidden');
-            document.getElementById('game-win-screen').classList.add('flex');
-            document.getElementById('final-score').innerText = score;
-
-            if(score >= 8 && !completedLevels.includes(activeLvl)) {
-                completedLevels.push(activeLvl);
-                if(db && currentUser) { 
-                    await setDoc(doc(db, "users", currentUser), { completedLevels: completedLevels }, { merge: true }); 
-                    await setDoc(doc(db, "leaderboard", currentUser), { score: increment(100) }, { merge: true }); 
-                }
-            }
+            if(score >= 8) {
+                if(!completedLevels.includes(activeLvl)) {
+                    completedLevels.push(activeLvl);
+                    if(db && currentUser) { await setDoc(doc(db, "users", currentUser), { completedLevels: completedLevels }, { merge: true }); await setDoc(doc(db, "leaderboard", currentUser), { score: increment(100) }, { merge: true }); }
+                    alert("Level Unlocked! +100 Points!");
+                } else alert("Great practice!");
+            } else alert("Score 8/10 to unlock next level!");
+            closeGame();
         }
 
         // --- CHECKLIST & CHAT ---
@@ -429,7 +505,7 @@
                 document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 document.getElementById('cd-secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
             };
-            updateTime(); setInterval(updateTime, 1000); renderItinerary(); lucide.createIcons();
+            updateTime(); setInterval(updateTime, 1000); lucide.createIcons();
         };
     </script>
 </body>
