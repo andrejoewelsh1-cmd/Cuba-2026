@@ -16,16 +16,21 @@
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         /* Chat */
         .chat-bubble { max-width: 85%; position: relative; word-wrap: break-word; }
         .chat-own { background: #3b82f6; color: white; border-radius: 18px 18px 0 18px; margin-left: auto; }
         .chat-other { background: #e2e8f0; color: #1e293b; border-radius: 18px 18px 18px 0; margin-right: auto; }
+        
         /* Avatar Hover */
         .avatar-card:hover .avatar-circle { transform: scale(1.1); border-color: white; }
         .avatar-circle { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        /* Confetti */
-        @keyframes confetti { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
-        .confetti-piece { position: absolute; width: 8px; height: 8px; top: -10px; animation: confetti 2.5s ease-out forwards; }
+        
+        /* Game Animations */
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+        .pop { animation: pop 0.3s ease-out; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
@@ -35,7 +40,7 @@
         <div class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1544015759-3d3cb0bc5d9d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
         <div class="relative z-10 min-h-screen flex flex-col items-center py-10 px-4">
             <div class="text-center mb-8 animate-in fade-in zoom-in duration-700">
-                <h1 class="text-4xl font-black text-white drop-shadow-lg mb-2">Who's Watching?</h1>
+                <h1 id="login-title" class="text-4xl font-black text-white drop-shadow-lg mb-2">Who's Watching?</h1>
                 <p class="text-blue-200 text-sm">Select your profile</p>
             </div>
             <div class="w-full max-w-5xl space-y-10 pb-10">
@@ -172,6 +177,11 @@
                 </div>
             </div>
 
+            <!-- Route Map Button -->
+            <a href="https://maps.app.goo.gl/4HCnEa3hnXqFsY7y6?g_st=ac" target="_blank" class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors mt-3">
+                <div class="flex items-center gap-3"><div class="bg-purple-100 p-2 rounded-lg text-purple-600"><i data-lucide="map" class="w-5 h-5"></i></div><div><span class="font-bold text-slate-700 text-sm block">Transfer Route</span><span class="text-xs text-slate-400">VRA to Resort</span></div></div><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
+            </a>
+
             <!-- Group Tasks (Live Sync) -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6">
                 <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 text-xs text-slate-400 font-bold uppercase tracking-wider flex justify-between items-center">
@@ -201,36 +211,35 @@
             </div>
         </div>
 
-        <!-- TAB: FUN -->
+        <!-- TAB: FUN (UPDATED SPANISH GAME) -->
         <div id="tab-fun" class="hidden p-6 space-y-6 fade-in">
-            <div class="bg-gradient-to-r from-orange-400 to-pink-500 rounded-2xl p-6 text-white text-center shadow-lg relative overflow-hidden">
-                <div class="relative z-10">
-                    <h3 class="text-2xl font-black mb-1">Spanish Quiz</h3>
-                    <p class="text-white/80 text-sm mb-4">Learn words, win points!</p>
-                    <button onclick="startRound()" class="bg-white text-orange-500 font-bold py-3 px-8 rounded-full shadow-md active:scale-95 transition-transform">Spanish Quiz</button>
+            <!-- Level Select Screen -->
+            <div id="level-select" class="space-y-4">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-black text-slate-800">Lingo Lizard 🦎</h2>
+                    <p class="text-sm text-slate-500">Unlock levels to prove your skills!</p>
                 </div>
-                <div class="absolute -bottom-4 -right-4 text-white/20"><i data-lucide="gamepad-2" class="w-32 h-32"></i></div>
-            </div>
-            
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800">Leaderboard</h3><span class="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Top Scores</span></div>
-                <div id="leaderboard-list" class="space-y-2"><p class="text-slate-400 text-xs">No scores yet.</p></div>
+                <div id="level-grid" class="grid gap-3">
+                    <!-- Levels Injected via JS -->
+                </div>
             </div>
 
-            <!-- Game Modal -->
-            <div id="game-modal" class="fixed inset-0 z-50 bg-slate-900/95 flex flex-col p-6 hidden">
-                <div class="flex justify-end"><button onclick="closeGame()" class="text-white p-2"><i data-lucide="x" class="w-8 h-8"></i></button></div>
-                <div class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
-                    <div id="game-ui-board">
-                        <div class="flex justify-between text-slate-400 font-mono mb-4"><span>Q: <span id="q-num" class="text-white">1</span>/10</span><span class="text-green-400">Score: <span id="current-score">0</span></span></div>
-                        <div class="bg-white rounded-3xl p-10 text-center mb-6"><div id="q-icon" class="text-6xl mb-4">🍦</div><h2 id="q-word" class="text-3xl font-black text-slate-800">Ice Cream</h2></div>
-                        <div id="options-container" class="grid gap-3"></div>
+            <!-- Game Board (Hidden) -->
+            <div id="game-ui" class="hidden h-full flex flex-col">
+                <button onclick="closeGame()" class="self-start text-slate-400 hover:text-slate-600 mb-4 flex items-center gap-1"><i data-lucide="arrow-left" class="w-4 h-4"></i> Exit</button>
+                <div class="flex-1 flex flex-col justify-center">
+                    <div class="bg-white rounded-3xl p-8 text-center shadow-lg mb-6 relative overflow-hidden">
+                        <div class="text-6xl mb-4" id="q-icon"></div>
+                        <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word"></h2>
+                        <button onclick="playCurrentAudio()" class="mx-auto bg-slate-100 hover:bg-slate-200 p-3 rounded-full text-slate-500 transition-colors"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
                     </div>
-                    <div id="game-ui-win" class="hidden text-center text-white">
-                        <div class="text-6xl mb-4">🎉</div><h2 class="text-3xl font-bold mb-2">Round Over!</h2><p class="text-xl text-slate-300 mb-8">Score: <span id="final-score">0</span>/10</p>
-                        <button onclick="closeGame()" class="bg-blue-500 px-8 py-3 rounded-full font-bold">Awesome</button>
-                    </div>
+                    <div id="options-container" class="grid gap-3"></div>
                 </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mt-8">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800">Leaderboard</h3><span class="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Top Agents</span></div>
+                <div id="leaderboard-list" class="space-y-2"><p class="text-slate-400 text-xs">No scores yet.</p></div>
             </div>
         </div>
 
@@ -248,14 +257,14 @@
     <script type="module">
         const firebaseConfig = { apiKey: "AIzaSyBXMvETONqUJI66jCqSAL1s6UhPG5HmVYE", authDomain: "cuba-2026.firebaseapp.com", databaseURL: "https://cuba-2026-default-rtdb.firebaseio.com", projectId: "cuba-2026", storageBucket: "cuba-2026.firebasestorage.app", messagingSenderId: "956837409462", appId: "1:956837409462:web:5bf7d01812b57b67616c17" };
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, updateDoc, setDoc, increment, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, updateDoc, setDoc, increment, deleteDoc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         let db, auth;
         let currentUser = localStorage.getItem('cubaUser');
-        let editingId = null;
+        let completedLevels = []; // Loaded from DB
 
-        // --- INIT FIREBASE ---
+        // INIT
         try {
             const app = initializeApp(firebaseConfig);
             db = getFirestore(app);
@@ -265,7 +274,7 @@
 
         function showError(msg) { document.getElementById('error-banner').innerText = msg; document.getElementById('error-banner').classList.remove('hidden'); }
 
-        // --- NAVIGATION LOGIC ---
+        // NAVIGATION
         window.switchTab = (tabName) => {
             ['home', 'prep', 'chat', 'fun'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -276,14 +285,156 @@
             document.getElementById(`nav-${tabName}`).classList.add('text-blue-600');
             document.getElementById(`nav-${tabName}`).classList.remove('text-slate-400');
             document.getElementById('header-subtitle').innerText = tabName === 'home' ? 'Family Vacation' : tabName === 'prep' ? 'Get Ready' : tabName === 'chat' ? 'Crew Chat' : 'Games & Stats';
+            if(tabName === 'fun') renderLevelSelect();
         };
 
-        // --- AUTH ---
+        // AUTH
         window.showMembers = (group) => { document.getElementById('group-selector').classList.add('hidden'); document.getElementById('member-selector').classList.remove('hidden'); ['kingston', 'vips', 'lees'].forEach(g => document.getElementById(`list-${g}`).classList.add('hidden')); document.getElementById(`list-${group}`).classList.remove('hidden'); document.getElementById('login-title').innerText = "Who are you?"; };
         window.backToGroups = () => { document.getElementById('member-selector').classList.add('hidden'); document.getElementById('group-selector').classList.remove('hidden'); document.getElementById('login-title').innerText = "Who is checking in?"; };
-        window.login = (name) => { currentUser = name; localStorage.setItem('cubaUser', name); document.getElementById('login-overlay').classList.add('hidden'); document.getElementById('header-avatar').innerText = name.charAt(0); };
+        window.login = async (name) => { 
+            currentUser = name; localStorage.setItem('cubaUser', name); 
+            document.getElementById('login-overlay').classList.add('hidden'); document.getElementById('header-avatar').innerText = name.charAt(0); 
+            // Load User Stats
+            if(db) {
+                const docSnap = await getDoc(doc(db, "users", name));
+                if (docSnap.exists()) completedLevels = docSnap.data().completedLevels || [];
+            }
+        };
         window.logout = () => { localStorage.removeItem('cubaUser'); location.reload(); };
         if(currentUser) window.login(currentUser);
+
+        // --- NEW SPANISH GAME LOGIC ---
+        const levels = [
+            { id: 1, title: "Rookie", icon: "👶", color: "green", vocab: [
+                {en:"Ice Cream",es:"Helado",wrong:["Zapato","Gato"]}, 
+                {en:"Pool",es:"Piscina",wrong:["Oficina","Cocina"]},
+                {en:"Beach",es:"Playa",wrong:["Pantalla","Banana"]},
+                {en:"Cat",es:"Gato",wrong:["Pato","Zapato"]},
+                {en:"Thank You",es:"Gracias",wrong:["De Nada","Por Favor"]}
+            ]},
+            { id: 2, title: "Explorer", icon: "🤠", color: "blue", vocab: [
+                {en:"Where is the bathroom?",es:"¿Dónde está el baño?",wrong:["¿Dónde está el gato?","Me gusta el baño"]},
+                {en:"I am hungry",es:"Tengo hambre",wrong:["Tengo un hombre","Soy una hamburguesa"]},
+                {en:"The iguana eats tacos",es:"La iguana come tacos",wrong:["La iguana baila salsa","El taco come iguana"]},
+                {en:"My brother smells",es:"Mi hermano huele mal",wrong:["Mi hermano es guapo","Me gusta el queso"]},
+                {en:"Chicken",es:"Pollo",wrong:["Repollo","Loco"]}
+            ]},
+            { id: 3, title: "Legend", icon: "🔥", color: "purple", vocab: [
+                {en:"I don't like broccoli",es:"No me gusta el brócoli",wrong:["Me encanta el brócoli","El brócoli es mi amigo"]},
+                {en:"Can I have a towel?",es:"¿Me das una toalla?",wrong:["¿Me das tu zapato?","Quiero una playa"]},
+                {en:"The pool is cold!",es:"¡La piscina está fría!",wrong:["¡La piscina es una sopa!","¡El gato está frío!"]},
+                {en:"See you later alligator",es:"Hasta luego cocodrilo",wrong:["Hola iguana","Adios papa"]},
+                {en:"More juice please",es:"Más jugo por favor",wrong:["Más lluvia por favor","No más jugo"]}
+            ]}
+        ];
+
+        let activeLevel = null;
+        let qIndex = 0;
+        let score = 0;
+
+        function renderLevelSelect() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = '';
+            levels.forEach((lvl, idx) => {
+                const isLocked = idx > 0 && !completedLevels.includes(levels[idx-1].id);
+                const isDone = completedLevels.includes(lvl.id);
+                const statusIcon = isLocked ? '🔒' : (isDone ? '⭐' : '▶️');
+                const opacity = isLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-[1.02]';
+                
+                grid.innerHTML += `
+                    <div onclick="${isLocked ? '' : `playLevel(${lvl.id})`}" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between transition-transform ${opacity}">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl bg-${lvl.color}-100 p-3 rounded-full">${lvl.icon}</div>
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-800">${lvl.title}</h3>
+                                <p class="text-xs text-slate-400">${isDone ? 'Mastered!' : isLocked ? 'Locked' : 'Ready to Play'}</p>
+                            </div>
+                        </div>
+                        <div class="text-2xl">${statusIcon}</div>
+                    </div>
+                `;
+            });
+        }
+
+        window.playLevel = (id) => {
+            activeLevel = levels.find(l => l.id === id);
+            qIndex = 0;
+            score = 0;
+            document.getElementById('level-select').classList.add('hidden');
+            document.getElementById('game-ui').classList.remove('hidden');
+            renderQ();
+        };
+
+        window.closeGame = () => {
+            document.getElementById('game-ui').classList.add('hidden');
+            document.getElementById('level-select').classList.remove('hidden');
+            renderLevelSelect();
+        };
+
+        function renderQ() {
+            if (qIndex >= activeLevel.vocab.length) {
+                finishLevel();
+                return;
+            }
+            const q = activeLevel.vocab[qIndex];
+            document.getElementById('q-icon').innerText = activeLevel.icon;
+            document.getElementById('q-word').innerText = q.en;
+            
+            const opts = [q.es, ...q.wrong].sort(() => 0.5 - Math.random());
+            const c = document.getElementById('options-container');
+            c.innerHTML = '';
+            opts.forEach(o => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm active:scale-95 transition-all";
+                btn.innerText = o;
+                btn.onclick = () => checkAnswer(o === q.es, btn);
+                c.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(correct, btn) {
+            if (correct) {
+                btn.classList.replace('bg-slate-100', 'bg-green-500');
+                btn.classList.add('text-white', 'pop');
+                score++;
+                // Speak
+                const u = new SpeechSynthesisUtterance(activeLevel.vocab[qIndex].es);
+                u.lang = 'es-ES';
+                window.speechSynthesis.speak(u);
+                
+                setTimeout(() => {
+                    qIndex++;
+                    renderQ();
+                }, 1000);
+            } else {
+                btn.classList.replace('bg-slate-100', 'bg-red-500');
+                btn.classList.add('text-white', 'shake');
+            }
+        }
+
+        window.playCurrentAudio = () => {
+            const txt = activeLevel.vocab[qIndex].es;
+            const u = new SpeechSynthesisUtterance(txt);
+            u.lang = 'es-ES';
+            window.speechSynthesis.speak(u);
+        };
+
+        async function finishLevel() {
+            // Logic: 100pts for first clear, 0 for replay
+            const isFirstTime = !completedLevels.includes(activeLevel.id);
+            if (isFirstTime) {
+                completedLevels.push(activeLevel.id);
+                // Save to DB
+                if(db && currentUser) {
+                    await setDoc(doc(db, "users", currentUser), { completedLevels: completedLevels }, { merge: true });
+                    await setDoc(doc(db, "leaderboard", currentUser), { score: increment(100) }, { merge: true });
+                }
+                alert(`Level Complete! +100 Points!`);
+            } else {
+                alert(`Level Mastered! (No extra points for replays)`);
+            }
+            closeGame();
+        }
 
         // --- COUNTDOWN ---
         function updateCountdown() {
@@ -294,19 +445,16 @@
             document.getElementById('cd-secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
         }
 
-        // --- CHECKLIST DATA & LOGIC ---
+        // --- CHECKLIST & CHAT (Standard) ---
         const checklistData = ["Online Check-in (24h)", "Download Offline Maps", "Load iPads/Movies", "Notify Bank", "Empty Fridge", "Water Plants", "Lock House", "Share Flight Status"];
         window.toggleCheck = async (id, val) => {
             if(!db) return;
             const ref = doc(db, "checklist", id);
-            if (val) {
-                await setDoc(ref, { completedBy: arrayUnion(currentUser) }, { merge: true });
-            } else {
-                await updateDoc(ref, { completedBy: arrayRemove(currentUser) });
-            }
+            val ? await setDoc(ref, { completedBy: arrayUnion(currentUser) }, { merge: true }) : await updateDoc(ref, { completedBy: arrayRemove(currentUser) });
         };
-
+        
         // --- CHAT LOGIC ---
+        let editingId = null;
         window.toggleImageInput = () => document.getElementById('image-input-area').classList.toggle('hidden');
         window.postChat = async () => {
             const txt = document.getElementById('chat-input').value.trim();
@@ -321,43 +469,7 @@
         window.editMessage = (id, txt, img) => { editingId = id; document.getElementById('chat-input').value = txt; document.getElementById('img-url-input').value = img || ''; document.getElementById('edit-controls').classList.add('flex'); document.getElementById('edit-controls').classList.remove('hidden'); };
         window.cancelEdit = () => { editingId = null; document.getElementById('chat-input').value = ''; document.getElementById('edit-controls').classList.add('hidden'); document.getElementById('edit-controls').classList.remove('flex'); };
 
-        // --- GAME LOGIC ---
-        const vocab = [{en:"Ice Cream",es:"Helado",icon:"🍦",wrong:["Pollo","Agua"]},{en:"Pool",es:"Piscina",icon:"🏊",wrong:["Playa","Baño"]},{en:"Beach",es:"Playa",icon:"🏖️",wrong:["Piscina","Sol"]},{en:"Chicken",es:"Pollo",icon:"🍗",wrong:["Gato","Perro"]},{en:"Bathroom",es:"Baño",icon:"🚽",wrong:["Banco","Bar"]},{en:"Water",es:"Agua",icon:"💧",wrong:["Jugo","Leche"]},{en:"Hello",es:"Hola",icon:"👋",wrong:["Adios","Gracias"]},{en:"Thank You",es:"Gracias",icon:"🙏",wrong:["Por Favor","Hola"]},{en:"Friend",es:"Amigo",icon:"🤝",wrong:["Enemigo","Casa"]},{en:"Sun",es:"Sol",icon:"☀️",wrong:["Luna","Mar"]}];
-        window.gameState = { questions: [], currentQ: 0, score: 0, active: false };
-        window.startRound = () => { window.gameState.questions = [...vocab].sort(() => 0.5 - Math.random()).slice(0,10); window.gameState.currentQ = 0; window.gameState.score = 0; window.gameState.active = true; document.getElementById('game-modal').classList.remove('hidden'); document.getElementById('game-ui-board').classList.remove('hidden'); document.getElementById('game-ui-win').classList.add('hidden'); renderQuestion(); };
-        window.closeGame = () => { document.getElementById('game-modal').classList.add('hidden'); };
-        function renderQuestion() {
-            const q = window.gameState.questions[window.gameState.currentQ];
-            document.getElementById('q-num').innerText = window.gameState.currentQ + 1;
-            document.getElementById('current-score').innerText = window.gameState.score;
-            document.getElementById('q-icon').innerText = q.icon;
-            document.getElementById('q-word').innerText = q.en;
-            const c = document.getElementById('options-container'); c.innerHTML = '';
-            [q.es, ...q.wrong].sort(() => 0.5 - Math.random()).forEach(o => {
-                const btn = document.createElement('button');
-                btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm active:scale-95 transition-all";
-                btn.innerText = o;
-                btn.onclick = () => handleAnswer(o === q.es, btn);
-                c.appendChild(btn);
-            });
-        }
-        function handleAnswer(correct, btn) {
-            if(!window.gameState.active) return;
-            btn.className = correct ? "bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm" : "bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm";
-            if(correct) window.gameState.score++;
-            window.gameState.active = false;
-            setTimeout(() => {
-                window.gameState.currentQ++;
-                if(window.gameState.currentQ >= 10) endRound(); else { window.gameState.active = true; renderQuestion(); }
-            }, 600);
-        }
-        async function endRound() {
-            document.getElementById('game-ui-board').classList.add('hidden'); document.getElementById('game-ui-win').classList.remove('hidden');
-            document.getElementById('final-score').innerText = window.gameState.score;
-            if(db && currentUser) await setDoc(doc(db, "leaderboard", currentUser), { score: increment(window.gameState.score) }, { merge: true });
-        }
 
-        // --- LISTENERS ---
         function initRealtimeListeners() {
             onSnapshot(query(collection(db, "chat"), orderBy("timestamp", "asc"), limit(50)), snap => {
                 const c = document.getElementById('chat-container'); c.innerHTML = '';
@@ -378,26 +490,10 @@
                     const data = snap.docs.find(d => d.id === id)?.data() || {};
                     const completedBy = data.completedBy || [];
                     const isChecked = completedBy.includes(currentUser);
-                    
-                    let completionInfo = '';
-                    if (completedBy.length > 0) {
-                        // Everyone sees who completed it
-                        const names = completedBy.join(', ');
-                        completionInfo = `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ Completed by: ${names}</div>`;
-                    }
-
-                    const div = document.createElement('div');
-                    div.onclick = (e) => { if(e.target.tagName !== 'A') toggleCheck(id, !isChecked); };
+                    let info = completedBy.length ? `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ ${completedBy.join(', ')}</div>` : '';
+                    const div = document.createElement('div'); div.onclick = (e) => { if(e.target.tagName !== 'A') toggleCheck(id, !isChecked); };
                     div.className = `p-4 cursor-pointer hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0`;
-                    div.innerHTML = `
-                        <div class="flex items-center justify-between">
-                            <span class="font-medium text-slate-700 ${isChecked ? 'line-through opacity-50' : ''}">${item}</span>
-                            <div class="w-6 h-6 rounded-full border-2 ${isChecked ? 'bg-green-500 border-green-500' : 'border-slate-300'} flex items-center justify-center transition-all">
-                                ${isChecked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
-                            </div>
-                        </div>
-                        ${completionInfo}
-                    `;
+                    div.innerHTML = `<div class="flex items-center justify-between"><span class="font-medium text-slate-700 ${isChecked ? 'line-through opacity-50' : ''}">${item}</span><div class="w-6 h-6 rounded-full border-2 ${isChecked ? 'bg-green-500 border-green-500' : 'border-slate-300'} flex items-center justify-center transition-all">${isChecked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}</div></div>${info}`;
                     c.appendChild(div);
                 });
                 lucide.createIcons();
@@ -405,9 +501,7 @@
             onSnapshot(query(collection(db, "leaderboard"), orderBy("score", "desc")), snap => {
                 const l = document.getElementById('leaderboard-list'); l.innerHTML = '';
                 let i = 1;
-                snap.forEach(doc => { 
-                    l.innerHTML += `<div class="flex justify-between items-center p-2 border-b border-slate-50 last:border-0"><span class="text-xs text-slate-400 font-mono w-6">#${i++}</span><span class="font-bold text-slate-700 text-sm flex-1">${doc.id}</span><span class="font-mono font-bold text-green-500">${doc.data().score}</span></div>`; 
-                });
+                snap.forEach(doc => { l.innerHTML += `<div class="flex justify-between items-center p-2 border-b border-slate-50 last:border-0"><span class="text-xs text-slate-400 font-mono w-6">#${i++}</span><span class="font-bold text-slate-700 text-sm flex-1">${doc.id}</span><span class="font-mono font-bold text-green-500">${doc.data().score}</span></div>`; });
             });
         }
 
