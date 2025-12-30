@@ -364,7 +364,6 @@
                 snap.forEach(doc => {
                     const d = doc.data(); const isMe = d.user === currentUser;
                     const div = document.createElement('div'); div.className = `chat-bubble p-3 mb-2 rounded-2xl max-w-[85%] relative group ${isMe ? 'chat-own' : 'chat-other'}`;
-                    // Controls
                     let controls = isMe ? `<div class="absolute -top-2 -right-2 bg-slate-800 rounded-full px-2 py-1 shadow hidden group-hover:flex"><button onclick="editMessage('${doc.id}', '${d.text.replace(/'/g, "\\'")}', '${d.image||''}')" class="text-xs text-blue-400 mr-2">Edit</button><button onclick="deleteMessage('${doc.id}')" class="text-xs text-red-400">Del</button></div>` : '';
                     div.innerHTML = `${!isMe ? `<span class="text-[10px] font-bold opacity-60 block mb-1">${d.user}</span>` : ''} ${d.image ? `<img src="${d.image}" class="rounded-lg mb-1 w-full h-32 object-cover">` : ''} <p class="text-sm">${d.text}</p> ${controls} ${d.likes?.length ? `<div class="absolute -bottom-2 right-0 bg-white text-red-500 rounded-full px-1 text-[10px] shadow border">❤️ ${d.likes.length}</div>` : ''}`;
                     div.ondblclick = () => toggleLike(doc.id, d.likes || []);
@@ -380,10 +379,11 @@
                     const completedBy = data.completedBy || [];
                     const isChecked = completedBy.includes(currentUser);
                     
-                    let adminHtml = '';
-                    if (currentUser === 'Andre') {
-                        const others = completedBy.filter(u => u !== 'Andre');
-                        if (others.length > 0) adminHtml = `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ Done: ${others.join(', ')}</div>`;
+                    let completionInfo = '';
+                    if (completedBy.length > 0) {
+                        // Everyone sees who completed it
+                        const names = completedBy.join(', ');
+                        completionInfo = `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ Completed by: ${names}</div>`;
                     }
 
                     const div = document.createElement('div');
@@ -396,7 +396,7 @@
                                 ${isChecked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
                             </div>
                         </div>
-                        ${adminHtml}
+                        ${completionInfo}
                     `;
                     c.appendChild(div);
                 });
