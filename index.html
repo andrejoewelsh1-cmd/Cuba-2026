@@ -30,11 +30,10 @@
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
 
-    <!-- LOGIN OVERLAY (NETFLIX STYLE) -->
+    <!-- LOGIN OVERLAY -->
     <div id="login-overlay" class="fixed inset-0 z-[100] bg-slate-900 overflow-y-auto">
         <div class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1544015759-3d3cb0bc5d9d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
         <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
-            
             <div class="text-center mb-10 animate-in fade-in zoom-in duration-700">
                 <h1 id="login-title" class="text-4xl font-black text-white drop-shadow-lg mb-2">Select Profile</h1>
             </div>
@@ -61,16 +60,9 @@
             <!-- STEP 2: MEMBERS (Hidden) -->
             <div id="member-selector" class="hidden w-full max-w-3xl">
                 <button onclick="backToGroups()" class="mb-8 flex items-center gap-2 text-slate-300 hover:text-white transition-colors mx-auto uppercase text-xs font-bold tracking-widest"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Groups</button>
-                
-                <div id="list-kingston" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6 justify-items-center slide-up">
-                    <!-- JS Injected -->
-                </div>
-                <div id="list-vips" class="hidden grid grid-cols-2 gap-8 justify-items-center slide-up">
-                    <!-- JS Injected -->
-                </div>
-                <div id="list-lees" class="hidden grid grid-cols-3 md:grid-cols-4 gap-6 justify-items-center slide-up">
-                    <!-- JS Injected -->
-                </div>
+                <div id="list-kingston" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6 justify-items-center slide-up"></div>
+                <div id="list-vips" class="hidden grid grid-cols-2 gap-8 justify-items-center slide-up"></div>
+                <div id="list-lees" class="hidden grid grid-cols-3 md:grid-cols-4 gap-6 justify-items-center slide-up"></div>
             </div>
         </div>
     </div>
@@ -87,7 +79,7 @@
     <main class="flex-1 overflow-y-auto bg-slate-50 pb-24 no-scrollbar" id="main-scroll">
         <div id="error-banner" class="hidden bg-red-100 text-red-600 p-3 text-xs text-center font-bold"></div>
 
-        <!-- HOME TAB -->
+        <!-- TAB: HOME -->
         <div id="tab-home" class="p-6 space-y-6 fade-in">
             <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-3xl p-8 text-center text-white shadow-xl shadow-blue-500/20 relative overflow-hidden">
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
@@ -97,27 +89,21 @@
                     <span class="text-xl font-bold text-blue-200">Days</span>
                 </div>
             </div>
-            <!-- Trip Plan -->
+            
+            <!-- Quick Timeline Preview -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Trip Plan</h3>
-                <div class="space-y-6 relative pl-4 border-l-2 border-slate-100">
-                    <div class="relative">
-                        <div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-white"></div>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Fri Feb 13</p>
-                        <p class="font-bold text-slate-700">Heading Out</p>
-                        <p class="text-sm text-slate-500">Drive to Toronto. Pizza Night at Marriott.</p>
-                    </div>
-                    <div class="relative">
-                        <div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-green-500 ring-4 ring-white"></div>
-                        <p class="text-xs font-bold text-slate-400 uppercase">Sat Feb 14</p>
-                        <p class="font-bold text-slate-700">Flight Day! ✈️</p>
-                        <p class="text-sm text-slate-500">TS556 departs 10:40. Hello Cuba!</p>
-                    </div>
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Up Next</h3>
+                    <button onclick="switchTab('itinerary')" class="text-xs font-bold text-blue-600 hover:underline">View Full Plan</button>
+                </div>
+                <div class="space-y-4 relative pl-4 border-l-2 border-slate-100">
+                    <div class="relative"><div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-white"></div><p class="text-xs font-bold text-slate-400 uppercase">Fri Feb 13</p><p class="font-bold text-slate-700">Heading Out</p></div>
+                    <div class="relative"><div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-green-500 ring-4 ring-white"></div><p class="text-xs font-bold text-slate-400 uppercase">Sat Feb 14</p><p class="font-bold text-slate-700">Flight Day! ✈️</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- PREP TAB -->
+        <!-- TAB: PREP (DOCS) -->
         <div id="tab-prep" class="hidden p-6 space-y-6 fade-in">
             <div class="bg-red-50 p-5 rounded-2xl border border-red-100">
                 <h3 class="font-bold text-red-700 mb-3 flex items-center gap-2"><i data-lucide="alert-circle" class="w-5 h-5"></i> Must Dos</h3>
@@ -125,74 +111,108 @@
                     <div><span class="block font-bold text-slate-800 text-sm">D'Viajeros Form</span><span class="block text-xs text-red-400">Mandatory 72h before flight</span></div><i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
                 </a>
             </div>
+
+            <!-- DOCUMENT VAULT -->
             <div>
                 <h3 class="font-bold text-slate-800 mb-3 px-1">Document Vault</h3>
                 <div class="grid grid-cols-1 gap-3">
                     <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-blue-50 transition-colors">
                         <div class="bg-blue-100 p-2 rounded-lg text-blue-600"><i data-lucide="file-text" class="w-6 h-6"></i></div>
-                        <div><span class="font-bold text-slate-700 block text-sm">Flight Ticket (PDF)</span></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Flight Ticket (PDF)</span><span class="text-xs text-slate-400">Air Transat TS556/TS557</span></div>
                     </a>
+                    
+                    <!-- Hotel 1 -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-90">
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 13)</span><span class="text-xs text-slate-400">Toronto Airport - Arrival</span></div>
+                    </div>
+                    
+                    <!-- Hotel 2 -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-90">
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 21)</span><span class="text-xs text-slate-400">Toronto Airport - Return</span></div>
+                    </div>
+
                     <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-green-50 transition-colors">
                         <div class="bg-green-100 p-2 rounded-lg text-green-600"><i data-lucide="table" class="w-6 h-6"></i></div>
-                        <div><span class="font-bold text-slate-700 block text-sm">Master Packing List</span></div>
-                    </a>
-                    <a href="https://maps.app.goo.gl/4HCnEa3hnXqFsY7y6?g_st=ac" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-purple-50 transition-colors">
-                        <div class="bg-purple-100 p-2 rounded-lg text-purple-600"><i data-lucide="map" class="w-6 h-6"></i></div>
-                        <div><span class="font-bold text-slate-700 block text-sm">Route Map</span><span class="text-xs text-slate-400">VRA to Resort</span></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Master Packing List</span><span class="text-xs text-slate-400">Google Spreadsheet</span></div>
                     </a>
                 </div>
             </div>
+
+            <!-- Live Sync Tasks -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6">
-                <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 text-xs text-slate-400 font-bold uppercase tracking-wider">Group Tasks (Live Sync)</div>
+                <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 text-xs text-slate-400 font-bold uppercase tracking-wider flex justify-between items-center">
+                    <span>Group Tasks</span>
+                    <span class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full">Live Sync</span>
+                </div>
                 <div id="checklist-container" class="divide-y divide-slate-50"><div class="p-4 text-center text-slate-400 text-sm">Loading...</div></div>
             </div>
         </div>
 
-        <!-- CHAT TAB -->
+        <!-- TAB: ITINERARY (FULL) -->
+        <div id="tab-itinerary" class="hidden p-6 space-y-6 fade-in">
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Full Timeline</h2>
+            <div id="itinerary-list" class="space-y-4 pb-20">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+
+        <!-- TAB: CHAT -->
         <div id="tab-chat" class="hidden flex flex-col h-full fade-in pb-0">
-            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-20"></div>
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-20"><div class="text-center text-slate-400 text-xs mt-10">Start the conversation...</div></div>
             <div class="p-4 bg-white border-t border-slate-100 fixed bottom-20 w-full max-w-3xl left-1/2 -translate-x-1/2 z-20">
                 <div id="edit-controls" class="hidden justify-between text-xs text-orange-500 mb-2 px-1"><span>Editing...</span><button onclick="cancelEdit()" class="text-slate-400">Cancel</button></div>
                 <div class="flex gap-2">
                     <button onclick="toggleImageInput()" class="text-slate-400 hover:text-blue-500 p-2"><i data-lucide="image" class="w-6 h-6"></i></button>
                     <input type="text" id="chat-input" placeholder="Message..." class="flex-1 bg-slate-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="postChat()" class="bg-blue-600 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center shadow-md"><i data-lucide="send" class="w-4 h-4"></i></button>
+                    <button onclick="postChat()" id="send-btn" class="bg-blue-600 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center shadow-md"><i data-lucide="send" class="w-4 h-4"></i></button>
                 </div>
                 <div id="image-input-area" class="hidden mt-2"><input type="text" id="img-url-input" placeholder="Paste image link..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs"></div>
             </div>
         </div>
 
-        <!-- FUN TAB -->
+        <!-- TAB: FUN -->
         <div id="tab-fun" class="hidden p-6 space-y-6 fade-in">
-            <div class="text-center mb-6"><h2 class="text-2xl font-black text-slate-800">Lingo Lizard 🦎</h2><p class="text-sm text-slate-500">Level up your Spanish!</p></div>
-            <div id="level-grid" class="grid gap-3"></div> <!-- Levels Injected -->
-            
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 mt-8">
-                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800">Leaderboard</h3><span class="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Top Agents</span></div>
+            <div class="bg-gradient-to-r from-orange-400 to-pink-500 rounded-2xl p-6 text-white text-center shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-black mb-1">Spanish Quiz</h3>
+                    <p class="text-white/80 text-sm mb-4">Learn words, win points!</p>
+                    <button onclick="startRound()" class="bg-white text-orange-500 font-bold py-3 px-8 rounded-full shadow-md active:scale-95 transition-transform">Play Now</button>
+                </div>
+                <div class="absolute -bottom-4 -right-4 text-white/20"><i data-lucide="gamepad-2" class="w-32 h-32"></i></div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800">Leaderboard</h3><span class="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Top Scores</span></div>
                 <div id="leaderboard-list" class="space-y-2"><p class="text-slate-400 text-xs">No scores yet.</p></div>
             </div>
+        </div>
 
-            <!-- Game Modal -->
-            <div id="game-ui" class="fixed inset-0 z-50 bg-slate-900 flex flex-col p-6 hidden">
-                <button onclick="closeGame()" class="self-start text-white/50 hover:text-white mb-6 flex items-center gap-2"><i data-lucide="arrow-left" class="w-5 h-5"></i> Quit</button>
-                <div class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
-                    <div class="flex justify-between text-slate-400 font-mono mb-4 text-sm"><span>LEVEL <span id="game-level" class="text-white">1</span></span><span>SCORE: <span id="current-score" class="text-green-400">0</span>/10</span></div>
-                    <div class="bg-white rounded-3xl p-8 text-center mb-6 shadow-2xl relative">
-                        <button onclick="playCurrentAudio()" class="absolute top-4 right-4 text-blue-400 hover:text-blue-600"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
-                        <div class="text-6xl mb-4" id="q-icon"></div>
-                        <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word"></h2>
-                    </div>
-                    <div id="options-container" class="grid gap-3"></div>
+        <!-- Game Modal -->
+        <div id="game-ui" class="fixed inset-0 z-50 bg-slate-900 flex flex-col p-6 hidden">
+            <button onclick="closeGame()" class="self-start text-white/50 hover:text-white mb-6 flex items-center gap-2"><i data-lucide="arrow-left" class="w-5 h-5"></i> Quit</button>
+            <div class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
+                <div class="flex justify-between text-slate-400 font-mono mb-4 text-sm"><span>LEVEL <span id="game-level" class="text-white">1</span></span><span>SCORE: <span id="current-score" class="text-green-400">0</span>/10</span></div>
+                <div class="bg-white rounded-3xl p-8 text-center mb-6 shadow-2xl relative">
+                    <button onclick="playCurrentAudio()" class="absolute top-4 right-4 text-blue-400 hover:text-blue-600"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
+                    <div class="text-6xl mb-4" id="q-icon"></div>
+                    <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word"></h2>
                 </div>
+                <div id="options-container" class="grid gap-3"></div>
             </div>
+        </div>
+        <div id="game-win" class="fixed inset-0 z-50 bg-slate-900/95 flex-col items-center justify-center p-6 hidden">
+            <div class="text-6xl mb-4">🎉</div><h2 class="text-3xl font-bold mb-2 text-white">Round Over!</h2><p class="text-xl text-slate-300 mb-8">Score: <span id="final-score">0</span>/10</p>
+            <button onclick="closeGame()" class="bg-blue-500 text-white px-8 py-3 rounded-full font-bold">Awesome</button>
         </div>
 
     </main>
 
-    <!-- NAV -->
+    <!-- 4. BOTTOM NAVIGATION BAR -->
     <nav class="bg-white border-t border-slate-200 h-20 fixed bottom-0 w-full z-40 px-6 pb-2 flex justify-between items-center max-w-5xl mx-auto left-0 right-0">
         <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1 text-blue-600" id="nav-home"><i data-lucide="home" class="w-6 h-6"></i><span class="text-[10px] font-bold">Home</span></button>
         <button onclick="switchTab('prep')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-prep"><i data-lucide="clipboard-list" class="w-6 h-6"></i><span class="text-[10px] font-bold">Prep</span></button>
+        <button onclick="switchTab('itinerary')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-itinerary"><i data-lucide="map-pin" class="w-6 h-6"></i><span class="text-[10px] font-bold">Plan</span></button>
         <button onclick="switchTab('chat')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-chat"><i data-lucide="message-circle" class="w-6 h-6"></i><span class="text-[10px] font-bold">Chat</span></button>
         <button onclick="switchTab('fun')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-fun"><i data-lucide="smile" class="w-6 h-6"></i><span class="text-[10px] font-bold">Fun</span></button>
     </nav>
@@ -206,7 +226,7 @@
 
         let db, auth;
         let currentUser = localStorage.getItem('cubaUser');
-        let completedLevels = [];
+        let editingId = null;
 
         // INIT
         try {
@@ -240,84 +260,106 @@
 
         window.backToGroups = () => { document.getElementById('member-selector').classList.add('hidden'); document.getElementById('group-selector').classList.remove('hidden'); document.getElementById('login-title').innerText = "Select Profile"; };
         
-        window.login = async (name) => {
+        window.login = (name) => {
             currentUser = name; localStorage.setItem('cubaUser', name); 
             document.getElementById('login-overlay').classList.add('hidden'); 
             document.getElementById('header-avatar').innerText = name.charAt(0);
-            if(db) {
-                const snap = await getDoc(doc(db, "users", name));
-                if(snap.exists()) completedLevels = snap.data().completedLevels || [];
-                renderLevels();
-            }
         };
-
         window.logout = () => { localStorage.removeItem('cubaUser'); location.reload(); };
         if(currentUser) window.login(currentUser);
 
         window.switchTab = (t) => {
-            ['home','prep','chat','fun'].forEach(x => { document.getElementById(`tab-${x}`).classList.add('hidden'); document.getElementById(`nav-${x}`).classList.remove('text-blue-600'); document.getElementById(`nav-${x}`).classList.add('text-slate-400'); });
+            ['home','prep','itinerary','chat','fun'].forEach(x => { document.getElementById(`tab-${x}`).classList.add('hidden'); document.getElementById(`nav-${x}`).classList.remove('text-blue-600'); document.getElementById(`nav-${x}`).classList.add('text-slate-400'); });
             document.getElementById(`tab-${t}`).classList.remove('hidden');
             document.getElementById(`nav-${t}`).classList.add('text-blue-600'); document.getElementById(`nav-${t}`).classList.remove('text-slate-400');
-            document.getElementById('header-subtitle').innerText = t === 'home' ? 'Family Vacation' : t === 'prep' ? 'Get Ready' : t === 'chat' ? 'Crew Chat' : 'Games & Stats';
+            document.getElementById('header-subtitle').innerText = t === 'home' ? 'Family Vacation' : t;
         };
+
+        // --- FULL ITINERARY DATA ---
+        const itineraryData = [
+            {day:"Fri Feb 13",title:"Heading Out",icon:"hotel",color:"text-blue-400",desc:"Drive to YYZ. Check in Marriott. Pizza Night."},
+            {day:"Sat Feb 14",title:"Flight Day",icon:"plane",color:"text-blue-400",desc:"TS556 -> Varadero. Shuttle to Resort. Arrival!"},
+            {day:"Sun Feb 15",title:"Pool Recon",icon:"sun",color:"text-orange-400",desc:"Scout the best pool spots & buffet locations."},
+            {day:"Mon Feb 16",title:"Beach Day",icon:"umbrella",color:"text-teal-400",desc:"Ocean swim & Kids Club sign up."},
+            {day:"Tue Feb 17",title:"Grandpa's 80th!",icon:"crown",color:"text-yellow-400",desc:"The Main Event. Big family dinner celebration."},
+            {day:"Wed Feb 18",title:"Sandcastle Wars",icon:"palmtree",color:"text-green-400",desc:"Kingston Crew vs Lee's. Who builds it best?"},
+            {day:"Thu Feb 19",title:"Free Day",icon:"camera",color:"text-purple-400",desc:"Relax at swim-up bar or excursion."},
+            {day:"Fri Feb 20",title:"Last Sunset",icon:"heart",color:"text-red-400",desc:"Final full day. Group photos on beach."},
+            {day:"Sat Feb 21",title:"Return Home",icon:"plane",color:"text-blue-400",desc:"TS557 -> YYZ. Overnight Marriott."},
+            {day:"Sun Feb 22",title:"Home",icon:"home",color:"text-slate-400",desc:"Breakfast and drive back to Kingston."}
+        ];
+
+        function renderItinerary() {
+            const c = document.getElementById('itinerary-list');
+            c.innerHTML = itineraryData.map(i => `
+                <div class="glass rounded-2xl p-5 flex gap-4 border border-slate-100 bg-white">
+                    <div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1"><i data-lucide="${i.icon}" class="${i.color} w-6 h-6"></i><div class="w-px h-full bg-slate-100 my-2"></div></div>
+                    <div><h4 class="font-bold text-slate-800 text-lg">${i.title}</h4><p class="text-xs font-bold text-slate-400 uppercase mb-2">${i.day}</p><p class="text-slate-500 text-sm leading-relaxed">${i.desc}</p></div>
+                </div>
+            `).join('');
+        }
 
         // --- GAME LOGIC ---
         const questionBank = {
-            1: [{q:"Ice Cream",a:"Helado",w:["Zapato","Gato"]}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"]}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"]}, {q:"Cat",a:"Gato",w:["Pato","Zapato"]}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"]}, {q:"Water",a:"Agua",w:["Jugo","Leche"]}, {q:"Sun",a:"Sol",w:["Luna","Mar"]}, {q:"Hello",a:"Hola",w:["Adios","Gracias"]}, {q:"Friend",a:"Amigo",w:["Enemigo","Casa"]}, {q:"Yes",a:"Si",w:["No","Tal vez"]}],
-            2: [{q:"Where is the bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"]}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"]}, {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"]}, {q:"Uncle Bryan sings loud",a:"Tío Bryan canta fuerte",w:["Tío Bryan duerme mucho","Tío Bryan come tacos"]}, {q:"The iguana dances",a:"La iguana baila",w:["La iguana come","La iguana duerme"]}],
-            3: [{q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"]}, {q:"Sophie draws a cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"]}, {q:"Nolan climbs the tree",a:"Nolan sube el árbol",w:["Nolan come el árbol","Nolan duerme en el árbol"]}, {q:"Grandpa is the king",a:"El abuelo es el rey",w:["El abuelo es el gato","El abuelo tiene hambre"]}]
+            1: [{q:"Ice Cream",a:"Helado",w:["Zapato","Gato"]}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"]}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"]}, {q:"Cat",a:"Gato",w:["Pato","Zapato"]}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"]}],
+            2: [{q:"Where is the bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"]}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"]}, {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"]}],
+            3: [{q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"]}, {q:"Sophie draws a cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"]}]
         };
-        const levels = [{id:1, title:"Rookie", icon:"👶", color:"green", req:0}, {id:2, title:"Explorer", icon:"🤠", color:"blue", req:1}, {id:3, title:"Legend", icon:"🔥", color:"purple", req:2}];
-        let activeLvl, qIdx, score, currentQs;
-
-        function renderLevels() {
-            document.getElementById('level-grid').innerHTML = levels.map(l => {
-                const locked = l.req > 0 && !completedLevels.includes(l.req);
-                const mastered = completedLevels.includes(l.id);
-                return `<div onclick="${locked ? '' : `playLevel(${l.id})`}" class="bg-white p-4 rounded-xl flex items-center justify-between border border-slate-100 ${locked ? 'opacity-50' : 'cursor-pointer hover:bg-slate-50'} transition-all"><div class="flex items-center gap-4"><div class="text-3xl bg-${l.color}-100 p-3 rounded-full">${l.icon}</div><div><h4 class="font-bold text-lg">${l.title}</h4><p class="text-xs opacity-70">${mastered ? 'Mastered!' : locked ? 'Locked' : 'Ready'}</p></div></div><div>${mastered ? '⭐' : locked ? '🔒' : '▶️'}</div></div>`;
-            }).join('');
-        }
-
-        window.playLevel = (id) => { activeLvl = id; currentQs = [...questionBank[id]].sort(()=>0.5-Math.random()).slice(0,10); qIdx = 0; score = 0; document.getElementById('game-ui').classList.remove('hidden'); document.getElementById('tab-fun').classList.add('hidden'); renderQ(); };
-        window.closeGame = () => { document.getElementById('game-ui').classList.add('hidden'); document.getElementById('tab-fun').classList.remove('hidden'); renderLevels(); };
-        
-        function renderQ() {
-            if (qIdx >= currentQs.length) { finishGame(); return; }
+        let qIdx, score, currentQs;
+        window.startRound = () => { currentQs = [...questionBank[1], ...questionBank[2], ...questionBank[3]].sort(()=>0.5-Math.random()).slice(0,10); qIdx = 0; score = 0; document.getElementById('game-modal').classList.remove('hidden'); document.getElementById('game-ui-board').classList.remove('hidden'); document.getElementById('game-ui-win').classList.add('hidden'); renderQuestion(); };
+        window.closeGame = () => { document.getElementById('game-modal').classList.add('hidden'); };
+        function renderQuestion() {
+            if (qIdx >= 10) { endRound(); return; }
             const q = currentQs[qIdx];
-            document.getElementById('game-level').innerText = activeLvl; document.getElementById('current-score').innerText = score; document.getElementById('q-word').innerText = q.q; document.getElementById('q-icon').innerText = levels.find(l=>l.id===activeLvl).icon;
-            const opts = [q.a, ...q.w].sort(()=>0.5-Math.random());
-            document.getElementById('options-container').innerHTML = opts.map(o => `<button onclick="answer('${o}', '${q.a}', this)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm transition active:scale-95">${o}</button>`).join('');
+            document.getElementById('q-num').innerText = qIdx + 1;
+            document.getElementById('current-score').innerText = score;
+            document.getElementById('q-word').innerText = q.q;
+            const c = document.getElementById('options-container'); c.innerHTML = '';
+            [q.a, ...q.w].sort(()=>0.5-Math.random()).forEach(o => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm active:scale-95 transition-all";
+                btn.innerText = o;
+                btn.onclick = () => handleAnswer(o === q.a, btn);
+                c.appendChild(btn);
+            });
         }
-
-        window.answer = (ans, corr, btn) => {
-            const isCorr = ans === corr;
-            btn.className = isCorr ? "bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm" : "bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm";
-            if(isCorr) { score++; playAudio(corr); }
-            setTimeout(() => { qIdx++; renderQ(); }, 1000);
-        };
-        window.playCurrentAudio = () => playAudio(currentQs[qIdx].a);
-        function playAudio(txt) { const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-ES'; window.speechSynthesis.speak(u); }
-
-        async function finishGame() {
-            if(score >= 8) {
-                if(!completedLevels.includes(activeLvl)) {
-                    completedLevels.push(activeLvl);
-                    if(db && currentUser) { await setDoc(doc(db, "users", currentUser), { completedLevels: completedLevels }, { merge: true }); await setDoc(doc(db, "leaderboard", currentUser), { score: increment(100) }, { merge: true }); }
-                    alert("Level Unlocked! +100 Points!");
-                } else alert("Great practice!");
-            } else alert("Score 8/10 to unlock next level!");
-            closeGame();
+        function handleAnswer(correct, btn) {
+            btn.className = correct ? "bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm" : "bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm";
+            if(correct) score++;
+            setTimeout(() => { qIdx++; renderQuestion(); }, 600);
         }
+        async function endRound() {
+            document.getElementById('game-ui-board').classList.add('hidden'); document.getElementById('game-ui-win').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            if(db && currentUser) await setDoc(doc(db, "leaderboard", currentUser), { score: increment(score) }, { merge: true });
+        }
+        window.playCurrentAudio = () => { const u = new SpeechSynthesisUtterance(currentQs[qIdx].a); u.lang = 'es-ES'; window.speechSynthesis.speak(u); };
 
         // --- CHECKLIST & CHAT ---
         window.toggleCheck = async (id, val) => { if(!db) return; const ref = doc(db, "checklist", id); val ? await setDoc(ref, { completedBy: arrayUnion(currentUser) }, { merge: true }) : await updateDoc(ref, { completedBy: arrayRemove(currentUser) }); };
         window.toggleImageInput = () => document.getElementById('image-input-area').classList.toggle('hidden');
         window.postChat = async () => { const t = document.getElementById('chat-input').value.trim(); const i = document.getElementById('img-url-input').value.trim(); if((!t && !i)) return; await addDoc(collection(db, "chat"), { user: currentUser, text: t, image: i, timestamp: new Date() }); document.getElementById('chat-input').value = ''; document.getElementById('img-url-input').value = ''; };
+        window.deleteMessage = async (id) => { if(confirm("Delete?")) await deleteDoc(doc(db, "chat", id)); };
+        window.toggleLike = async (id, likes) => { const ref = doc(db, "chat", id); if(likes.includes(currentUser)) await updateDoc(ref, { likes: arrayRemove(currentUser) }); else await updateDoc(ref, { likes: arrayUnion(currentUser) }); };
+        window.editMessage = (id, txt, img) => { editingId = id; document.getElementById('chat-input').value = txt; document.getElementById('img-url-input').value = img || ''; document.getElementById('edit-controls').classList.add('flex'); document.getElementById('edit-controls').classList.remove('hidden'); };
+        window.cancelEdit = () => { editingId = null; document.getElementById('chat-input').value = ''; document.getElementById('edit-controls').classList.add('hidden'); document.getElementById('edit-controls').classList.remove('flex'); };
 
         function initListeners() {
             onSnapshot(query(collection(db, "chat"), orderBy("timestamp", "asc"), limit(50)), snap => {
                 const c = document.getElementById('chat-container'); c.innerHTML = '';
-                snap.forEach(d => { const data = d.data(); const me = data.user === currentUser; c.innerHTML += `<div class="chat-bubble p-3 mb-2 rounded-2xl ${me?'chat-own':'chat-other'}"><span class="text-[10px] opacity-70 block mb-1 font-bold">${data.user}</span>${data.image?`<img src="${data.image}" class="rounded-lg mb-1 w-full h-32 object-cover">`:''}<p class="text-sm">${data.text}</p></div>`; });
+                snap.forEach(d => {
+                    const data = d.data(); const me = data.user === currentUser;
+                    let content = `<div class="chat-bubble p-3 mb-2 rounded-2xl ${me?'chat-own':'chat-other'} relative group">`;
+                    if(!me) content += `<span class="text-[10px] opacity-70 block mb-1 font-bold">${data.user}</span>`;
+                    if(data.image) content += `<img src="${data.image}" class="rounded-lg mb-1 w-full h-32 object-cover">`;
+                    content += `<p class="text-sm">${data.text}</p>`;
+                    if(me) content += `<div class="absolute -top-2 -right-2 bg-slate-800 rounded-full px-2 py-1 shadow hidden group-hover:flex"><button onclick="editMessage('${d.id}', '${data.text.replace(/'/g, "\\'")}', '${data.image||''}')" class="text-xs text-blue-400 mr-2">Edit</button><button onclick="deleteMessage('${d.id}')" class="text-xs text-red-400">Del</button></div>`;
+                    if(data.likes?.length) content += `<div class="absolute -bottom-2 right-0 bg-white text-red-500 rounded-full px-1 text-[10px] shadow border">❤️ ${data.likes.length}</div>`;
+                    content += `</div>`;
+                    const div = document.createElement('div'); div.innerHTML = content;
+                    div.firstChild.ondblclick = () => toggleLike(d.id, data.likes || []);
+                    c.appendChild(div.firstChild);
+                });
                 c.scrollTop = c.scrollHeight;
             });
             onSnapshot(collection(db, "checklist"), snap => {
@@ -339,8 +381,14 @@
         }
 
         window.onload = () => {
-            const updateTime = () => { const diff = new Date("2026-02-13T00:00:00").getTime() - new Date().getTime(); document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)); };
-            updateTime(); lucide.createIcons();
+            const updateTime = () => {
+                const diff = new Date("2026-02-13T00:00:00").getTime() - new Date().getTime();
+                document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                document.getElementById('cd-secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+            };
+            updateTime(); setInterval(updateTime, 1000); renderItinerary(); lucide.createIcons();
         };
     </script>
 </body>
