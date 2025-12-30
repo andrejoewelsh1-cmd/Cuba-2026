@@ -148,18 +148,32 @@
             </div>
 
             <!-- Documents -->
-            <div class="grid grid-cols-2 gap-3">
-                <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition-colors"><i data-lucide="file-text" class="w-6 h-6 mx-auto text-blue-500 mb-2"></i><span class="text-xs font-bold text-slate-700 block">Flight PDF</span></a>
-                <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition-colors"><i data-lucide="table" class="w-6 h-6 mx-auto text-green-500 mb-2"></i><span class="text-xs font-bold text-slate-700 block">Master List</span></a>
+            <div>
+                <h3 class="font-bold text-slate-800 mb-3 px-1">Document Vault</h3>
+                <div class="grid grid-cols-1 gap-3">
+                    <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-blue-50 transition-colors">
+                        <div class="bg-blue-100 p-2 rounded-lg text-blue-600"><i data-lucide="file-text" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Flight Ticket (PDF)</span><span class="text-xs text-slate-400">Air Transat TS556/TS557</span></div>
+                    </a>
+                    <!-- Placeholders for Hotels -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-75">
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 13)</span><span class="text-xs text-slate-400">Confirmation # Pending</span></div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-75">
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 21)</span><span class="text-xs text-slate-400">Confirmation # Pending</span></div>
+                    </div>
+                    <!-- Master List Link -->
+                    <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-green-50 transition-colors">
+                        <div class="bg-green-100 p-2 rounded-lg text-green-600"><i data-lucide="table" class="w-6 h-6"></i></div>
+                        <div><span class="font-bold text-slate-700 block text-sm">Master Packing List</span><span class="text-xs text-slate-400">Google Spreadsheet</span></div>
+                    </a>
+                </div>
             </div>
 
-            <!-- Route Map Button -->
-            <a href="https://maps.app.goo.gl/4HCnEa3hnXqFsY7y6?g_st=ac" target="_blank" class="flex items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors">
-                <div class="flex items-center gap-3"><div class="bg-purple-100 p-2 rounded-lg text-purple-600"><i data-lucide="map" class="w-5 h-5"></i></div><div><span class="font-bold text-slate-700 text-sm block">Transfer Route</span><span class="text-xs text-slate-400">VRA to Resort</span></div></div><i data-lucide="external-link" class="w-4 h-4 text-slate-400"></i>
-            </a>
-
             <!-- Group Tasks (Live Sync) -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6">
                 <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 text-xs text-slate-400 font-bold uppercase tracking-wider flex justify-between items-center">
                     <span>Group Tasks</span>
                     <span class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full">Live Sync</span>
@@ -282,7 +296,15 @@
 
         // --- CHECKLIST DATA & LOGIC ---
         const checklistData = ["Online Check-in (24h)", "Download Offline Maps", "Load iPads/Movies", "Notify Bank", "Empty Fridge", "Water Plants", "Lock House", "Share Flight Status"];
-        window.toggleCheck = async (id, val) => { if(!db) return; await setDoc(doc(db, "checklist", id), { checked: val }, { merge: true }); };
+        window.toggleCheck = async (id, val) => {
+            if(!db) return;
+            const ref = doc(db, "checklist", id);
+            if (val) {
+                await setDoc(ref, { completedBy: arrayUnion(currentUser) }, { merge: true });
+            } else {
+                await updateDoc(ref, { completedBy: arrayRemove(currentUser) });
+            }
+        };
 
         // --- CHAT LOGIC ---
         window.toggleImageInput = () => document.getElementById('image-input-area').classList.toggle('hidden');
@@ -354,11 +376,28 @@
                 const c = document.getElementById('checklist-container'); c.innerHTML = '';
                 checklistData.forEach(item => {
                     const id = item.replace(/[^a-zA-Z0-9]/g, '');
-                    let checked = false; snap.forEach(d => { if(d.id === id && d.data().checked) checked = true; });
+                    const data = snap.docs.find(d => d.id === id)?.data() || {};
+                    const completedBy = data.completedBy || [];
+                    const isChecked = completedBy.includes(currentUser);
+                    
+                    let adminHtml = '';
+                    if (currentUser === 'Andre') {
+                        const others = completedBy.filter(u => u !== 'Andre');
+                        if (others.length > 0) adminHtml = `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ Done: ${others.join(', ')}</div>`;
+                    }
+
                     const div = document.createElement('div');
-                    div.onclick = () => toggleCheck(id, !checked);
-                    div.className = `flex items-center justify-between p-4 cursor-pointer hover:bg-slate-50 transition-colors ${checked ? 'opacity-50' : ''}`;
-                    div.innerHTML = `<span class="font-medium text-slate-700 ${checked ? 'line-through' : ''}">${item}</span><div class="w-6 h-6 rounded-full border-2 ${checked ? 'bg-green-500 border-green-500' : 'border-slate-300'} flex items-center justify-center">${checked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}</div>`;
+                    div.onclick = (e) => { if(e.target.tagName !== 'A') toggleCheck(id, !isChecked); };
+                    div.className = `p-4 cursor-pointer hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0`;
+                    div.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="font-medium text-slate-700 ${isChecked ? 'line-through opacity-50' : ''}">${item}</span>
+                            <div class="w-6 h-6 rounded-full border-2 ${isChecked ? 'bg-green-500 border-green-500' : 'border-slate-300'} flex items-center justify-center transition-all">
+                                ${isChecked ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
+                            </div>
+                        </div>
+                        ${adminHtml}
+                    `;
                     c.appendChild(div);
                 });
                 lucide.createIcons();
