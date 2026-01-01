@@ -9,53 +9,60 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         .glass { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
+        .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         .slide-up { animation: slideUp 0.3s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
         /* Chat */
         .chat-bubble { max-width: 85%; position: relative; word-wrap: break-word; }
         .chat-own { background: #3b82f6; color: white; border-radius: 18px 18px 0 18px; margin-left: auto; }
         .chat-other { background: #e2e8f0; color: #1e293b; border-radius: 18px 18px 18px 0; margin-right: auto; }
+        
         /* Avatar Hover */
         .avatar-card:hover .avatar-circle { transform: scale(1.1); border-color: white; }
         .avatar-circle { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        /* Game Animations */
-        .pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        
+        /* Game FX */
+        .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+        .pop { animation: pop 0.2s ease-out; }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .flash { animation: flash 0.3s; }
+        @keyframes flash { 0% { background-color: rgba(34, 197, 94, 0.5); } 100% { background-color: transparent; } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+<body class="bg-slate-900 text-slate-100 h-screen flex flex-col overflow-hidden selection:bg-cyan-500/30">
 
     <!-- LOGIN OVERLAY -->
     <div id="login-overlay" class="fixed inset-0 z-[100] bg-slate-900 overflow-y-auto">
-        <div class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1544015759-3d3cb0bc5d9d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
+        <div class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1544015759-3d3cb0bc5d9d?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
         <div class="relative z-10 min-h-screen flex flex-col items-center justify-center p-6">
             <div class="text-center mb-10 animate-in fade-in zoom-in duration-700">
-                <h1 id="login-title" class="text-4xl font-black text-white drop-shadow-lg mb-2">Select Profile</h1>
+                <h1 id="login-title" class="text-4xl font-black text-white drop-shadow-lg mb-2 tracking-tight">Select Profile</h1>
             </div>
 
             <!-- GROUPS -->
             <div id="group-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl animate-in slide-in-from-bottom-8 duration-500">
-                <div onclick="showMembers('kingston')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                <div onclick="showMembers('kingston')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4 border border-blue-500/30">
                     <div class="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-lg text-4xl border-4 border-blue-400/30">😎</div>
-                    <div><h3 class="font-bold text-xl text-white">Kingston Crew</h3><p class="text-xs text-slate-300 mt-1 uppercase tracking-wider">Andre, Jenn & Kids</p></div>
+                    <div><h3 class="font-bold text-xl text-white">Kingston Crew</h3><p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Andre, Jenn & Kids</p></div>
                 </div>
-                <div onclick="showMembers('vips')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                <div onclick="showMembers('vips')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4 border border-yellow-500/30">
                     <div class="w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center shadow-lg text-4xl border-4 border-yellow-300/30">👑</div>
-                    <div><h3 class="font-bold text-xl text-white">The VIPs</h3><p class="text-xs text-slate-300 mt-1 uppercase tracking-wider">Grandpa's 80th</p></div>
+                    <div><h3 class="font-bold text-xl text-white">The VIPs</h3><p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Grandpa's 80th</p></div>
                 </div>
-                <div onclick="showMembers('lees')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4">
+                <div onclick="showMembers('lees')" class="group cursor-pointer glass p-8 rounded-3xl hover:bg-white/10 transition-all hover:scale-[1.02] active:scale-95 text-center flex flex-col items-center gap-4 border border-purple-500/30">
                     <div class="w-24 h-24 rounded-full bg-purple-600 flex items-center justify-center shadow-lg text-4xl border-4 border-purple-400/30">👯‍♀️</div>
-                    <div><h3 class="font-bold text-xl text-white">The Lee's & Co.</h3><p class="text-xs text-slate-300 mt-1 uppercase tracking-wider">Windsor Group</p></div>
+                    <div><h3 class="font-bold text-xl text-white">The Lee's & Co.</h3><p class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Windsor Group</p></div>
                 </div>
             </div>
 
             <!-- MEMBERS -->
             <div id="member-selector" class="hidden w-full max-w-3xl">
-                <button onclick="backToGroups()" class="mb-8 flex items-center gap-2 text-slate-300 hover:text-white transition-colors mx-auto uppercase text-xs font-bold tracking-widest"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Groups</button>
+                <button onclick="backToGroups()" class="mb-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors mx-auto uppercase text-xs font-bold tracking-widest"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Groups</button>
                 <div id="list-kingston" class="hidden grid grid-cols-2 md:grid-cols-3 gap-6 justify-items-center slide-up"></div>
                 <div id="list-vips" class="hidden grid grid-cols-2 gap-8 justify-items-center slide-up"></div>
                 <div id="list-lees" class="hidden grid grid-cols-3 md:grid-cols-4 gap-6 justify-items-center slide-up"></div>
@@ -63,17 +70,17 @@
         </div>
     </div>
 
-    <!-- HEADER -->
-    <header class="bg-white pt-12 pb-4 px-6 border-b border-slate-100 flex-none z-10 shadow-sm flex justify-between items-center">
+    <!-- MAIN HEADER -->
+    <header class="bg-slate-900/90 backdrop-blur-md pt-12 pb-4 px-6 border-b border-white/10 flex-none z-20 flex justify-between items-center">
         <div>
-            <h1 class="text-2xl font-black text-slate-800 tracking-tight">Cuba 2026</h1>
-            <p id="header-subtitle" class="text-xs text-slate-400 font-medium uppercase tracking-wider">Family Vacation</p>
+            <h1 class="text-2xl font-black text-white tracking-tight">Cuba 2026</h1>
+            <p id="header-subtitle" class="text-xs text-cyan-400 font-bold uppercase tracking-widest">Dashboard</p>
         </div>
-        <div onclick="logout()" id="header-avatar" class="w-10 h-10 rounded-full bg-blue-100 border-2 border-white shadow-md cursor-pointer flex items-center justify-center text-xl">😎</div>
+        <div onclick="logout()" id="header-avatar" class="w-10 h-10 rounded-full bg-slate-800 border border-white/20 flex items-center justify-center text-xl cursor-pointer">😎</div>
     </header>
 
-    <main class="flex-1 overflow-y-auto bg-slate-50 pb-24 no-scrollbar" id="main-scroll">
-        <div id="error-banner" class="hidden bg-red-100 text-red-600 p-3 text-xs text-center font-bold"></div>
+    <main class="flex-1 overflow-y-auto bg-slate-900 pb-24 no-scrollbar" id="main-scroll">
+        <div id="error-banner" class="hidden bg-red-500/20 text-red-300 p-3 text-xs text-center font-bold border-b border-red-500/20"></div>
 
         <!-- TAB: HOME -->
         <div id="tab-home" class="p-6 space-y-6 fade-in">
@@ -82,102 +89,121 @@
                 <p class="text-blue-200 text-xs font-bold uppercase tracking-widest mb-4">Time to Takeoff</p>
                 <div class="flex justify-center items-baseline gap-1 mb-6"><span id="cd-days" class="text-7xl font-black tracking-tighter">0</span><span class="text-xl font-bold text-blue-200">Days</span></div>
                 <div class="grid grid-cols-3 gap-2 bg-white/10 rounded-xl p-3 backdrop-blur-sm border border-white/10">
-                    <div class="flex flex-col items-center border-r border-white/10"><span id="cd-hours" class="text-2xl font-black font-mono">00</span><span class="text-[10px] uppercase text-blue-200 font-bold tracking-wider">Hours</span></div>
+                    <div class="flex flex-col items-center border-r border-white/10"><span id="cd-hours" class="text-2xl font-black font-mono">00</span><span class="text-[10px] uppercase text-blue-200 font-bold tracking-wider">Hrs</span></div>
                     <div class="flex flex-col items-center border-r border-white/10"><span id="cd-mins" class="text-2xl font-black font-mono">00</span><span class="text-[10px] uppercase text-blue-200 font-bold tracking-wider">Mins</span></div>
                     <div class="flex flex-col items-center"><span id="cd-secs" class="text-2xl font-black font-mono text-yellow-300">00</span><span class="text-[10px] uppercase text-blue-200 font-bold tracking-wider">Secs</span></div>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800 flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-blue-500"></i> Up Next</h3><button onclick="switchTab('itinerary')" class="text-xs font-bold text-blue-600 hover:underline">View Full Plan</button></div>
-                <div class="space-y-4 relative pl-4 border-l-2 border-slate-100">
-                    <div class="relative"><div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-white"></div><p class="text-xs font-bold text-slate-400 uppercase">Fri Feb 13</p><p class="font-bold text-slate-700">Heading Out</p></div>
-                    <div class="relative"><div class="absolute -left-[21px] top-1 w-3 h-3 rounded-full bg-green-500 ring-4 ring-white"></div><p class="text-xs font-bold text-slate-400 uppercase">Sat Feb 14</p><p class="font-bold text-slate-700">Flight Day! ✈️</p></div>
+            
+            <div onclick="switchTab('itinerary')" class="glass p-6 rounded-3xl cursor-pointer hover:bg-white/5 transition-colors group">
+                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="calendar" class="w-5 h-5 text-purple-400"></i> Up Next</h3><i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-white transition-colors"></i></div>
+                <div class="space-y-4 border-l-2 border-white/10 pl-4">
+                    <div class="relative"><div class="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-blue-500 ring-4 ring-slate-900"></div><p class="text-xs font-bold text-slate-400 uppercase">Fri Feb 13</p><p class="font-bold text-white">Heading Out</p></div>
+                    <div class="relative"><div class="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-green-500 ring-4 ring-slate-900"></div><p class="text-xs font-bold text-slate-400 uppercase">Sat Feb 14</p><p class="font-bold text-white">Flight Day! ✈️</p></div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB: PREP -->
+        <!-- TAB: PREP (DOCS) -->
         <div id="tab-prep" class="hidden p-6 space-y-6 fade-in">
-            <div class="bg-red-50 p-5 rounded-2xl border border-red-100">
-                <h3 class="font-bold text-red-700 mb-3 flex items-center gap-2"><i data-lucide="alert-circle" class="w-5 h-5"></i> Must Dos</h3>
-                <a href="https://dviajeros.mitrans.gob.cu/inicio" target="_blank" class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm border border-red-100 hover:bg-red-50 transition-colors">
-                    <div><span class="block font-bold text-slate-800 text-sm">D'Viajeros Form</span><span class="block text-xs text-red-400">Mandatory 72h before flight</span></div><i data-lucide="chevron-right" class="w-4 h-4 text-slate-300"></i>
+            <div class="bg-red-500/10 border border-red-500/20 p-5 rounded-2xl">
+                <h3 class="font-bold text-red-400 mb-3 flex items-center gap-2"><i data-lucide="alert-triangle" class="w-5 h-5"></i> Action Required</h3>
+                <a href="https://dviajeros.mitrans.gob.cu/inicio" target="_blank" class="flex justify-between items-center bg-red-500/10 p-3 rounded-xl hover:bg-red-500/20 transition-colors">
+                    <div><span class="block font-bold text-white text-sm">D'Viajeros Form</span><span class="block text-xs text-red-300">Mandatory 72h before flight</span></div><i data-lucide="external-link" class="w-4 h-4 text-red-300"></i>
                 </a>
             </div>
-            <div>
-                <h3 class="font-bold text-slate-800 mb-3 px-1">Document Vault</h3>
-                <div class="grid grid-cols-1 gap-3">
-                    <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-blue-50 transition-colors"><div class="bg-blue-100 p-2 rounded-lg text-blue-600"><i data-lucide="file-text" class="w-6 h-6"></i></div><div><span class="font-bold text-slate-700 block text-sm">Flight Ticket (PDF)</span><span class="text-xs text-slate-400">Air Transat TS556/TS557</span></div></a>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-90"><div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div><div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 13)</span><span class="text-xs text-slate-400">Confirmation # Pending</span></div></div>
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 opacity-90"><div class="bg-indigo-100 p-2 rounded-lg text-indigo-600"><i data-lucide="hotel" class="w-6 h-6"></i></div><div><span class="font-bold text-slate-700 block text-sm">Marriott (Feb 21)</span><span class="text-xs text-slate-400">Confirmation # Pending</span></div></div>
-                    <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center gap-4 hover:bg-green-50 transition-colors"><div class="bg-green-100 p-2 rounded-lg text-green-600"><i data-lucide="table" class="w-6 h-6"></i></div><div><span class="font-bold text-slate-700 block text-sm">Master Packing List</span><span class="text-xs text-slate-400">Google Spreadsheet</span></div></a>
-                </div>
+
+            <div class="space-y-3">
+                <h3 class="font-bold text-slate-400 text-xs uppercase tracking-widest px-1">Docs & Info</h3>
+                <a href="https://drive.google.com/file/d/17bhqNy6i4HG3PhhqyjUfdTD0Z6q9wfOB/view?usp=drivesdk" target="_blank" class="glass p-4 rounded-xl flex items-center gap-4 hover:bg-white/5"><div class="bg-blue-500/20 p-2 rounded-lg text-blue-400"><i data-lucide="file-text" class="w-6 h-6"></i></div><div><span class="font-bold text-white block text-sm">Flight PDF</span><span class="text-xs text-slate-400">TS556 / TS557</span></div></a>
+                <div class="glass p-4 rounded-xl flex items-center gap-4 opacity-75"><div class="bg-indigo-500/20 p-2 rounded-lg text-indigo-400"><i data-lucide="hotel" class="w-6 h-6"></i></div><div><span class="font-bold text-white block text-sm">Marriott (Feb 13/21)</span><span class="text-xs text-slate-400">Confirmation # Pending</span></div></div>
+                <a href="https://docs.google.com/spreadsheets/d/14-8XlghbKLDwl95PEXe2LGjbJzzini0LlssioEXR8oo/edit?usp=drivesdk" target="_blank" class="glass p-4 rounded-xl flex items-center gap-4 hover:bg-white/5"><div class="bg-green-500/20 p-2 rounded-lg text-green-400"><i data-lucide="table" class="w-6 h-6"></i></div><div><span class="font-bold text-white block text-sm">Packing List</span><span class="text-xs text-slate-400">Google Sheet</span></div></a>
+                <a href="https://maps.app.goo.gl/4HCnEa3hnXqFsY7y6?g_st=ac" target="_blank" class="glass p-4 rounded-xl flex items-center gap-4 hover:bg-white/5"><div class="bg-purple-500/20 p-2 rounded-lg text-purple-400"><i data-lucide="map" class="w-6 h-6"></i></div><div><span class="font-bold text-white block text-sm">Transfer Map</span><span class="text-xs text-slate-400">VRA -> Resort</span></div></a>
             </div>
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6">
-                <div class="bg-slate-50 px-4 py-3 border-b border-slate-100 text-xs text-slate-400 font-bold uppercase tracking-wider flex justify-between items-center"><span>Group Tasks</span><span class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full">Live Sync</span></div>
-                <div id="checklist-container" class="divide-y divide-slate-50"><div class="p-4 text-center text-slate-400 text-sm">Loading...</div></div>
+
+            <div class="space-y-3 pt-4">
+                <h3 class="font-bold text-slate-400 text-xs uppercase tracking-widest px-1">Group Tasks</h3>
+                <div id="checklist-container" class="space-y-2"></div>
             </div>
         </div>
 
         <!-- TAB: ITINERARY -->
         <div id="tab-itinerary" class="hidden p-6 space-y-6 fade-in">
-            <h2 class="text-2xl font-bold text-slate-800 mb-2">Full Timeline</h2>
+            <h2 class="text-2xl font-bold text-white mb-4">Full Timeline</h2>
             <div id="itinerary-list" class="space-y-4 pb-20"></div>
         </div>
 
         <!-- TAB: CHAT -->
         <div id="tab-chat" class="hidden flex flex-col h-full fade-in pb-0">
-            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-20"><div class="text-center text-slate-400 text-xs mt-10">Start the conversation...</div></div>
-            <div class="p-4 bg-white border-t border-slate-100 fixed bottom-20 w-full max-w-3xl left-1/2 -translate-x-1/2 z-20">
-                <div id="edit-controls" class="hidden justify-between text-xs text-orange-500 mb-2 px-1"><span>Editing...</span><button onclick="cancelEdit()" class="text-slate-400">Cancel</button></div>
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-24"><div class="text-center text-slate-500 text-xs mt-10">Secure channel open...</div></div>
+            <div class="p-4 bg-slate-900 border-t border-white/10 fixed bottom-20 w-full max-w-5xl left-0 right-0 mx-auto z-20">
+                <div id="edit-controls" class="hidden justify-between text-xs text-orange-400 mb-2 px-1"><span>Editing...</span><button onclick="cancelEdit()" class="text-slate-400">Cancel</button></div>
                 <div class="flex gap-2">
-                    <button onclick="toggleImageInput()" class="text-slate-400 hover:text-blue-500 p-2"><i data-lucide="image" class="w-6 h-6"></i></button>
-                    <input type="text" id="chat-input" placeholder="Message..." class="flex-1 bg-slate-100 rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="postChat()" id="send-btn" class="bg-blue-600 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center shadow-md"><i data-lucide="send" class="w-4 h-4"></i></button>
+                    <button onclick="toggleImageInput()" class="text-slate-400 hover:text-cyan-400 p-2"><i data-lucide="image" class="w-6 h-6"></i></button>
+                    <input type="text" id="chat-input" placeholder="Message..." class="flex-1 bg-slate-800 text-white rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 border border-white/10">
+                    <button onclick="postChat()" class="bg-cyan-600 hover:bg-cyan-500 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center shadow-lg"><i data-lucide="send" class="w-4 h-4"></i></button>
                 </div>
-                <div id="image-input-area" class="hidden mt-2"><input type="text" id="img-url-input" placeholder="Paste image link..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs"></div>
+                <div id="image-input-area" class="hidden mt-2"><input type="text" id="img-url-input" placeholder="Paste image link..." class="w-full bg-slate-800 text-white border border-white/10 rounded-lg px-3 py-2 text-xs"></div>
             </div>
         </div>
 
-        <!-- TAB: FUN -->
-        <div id="tab-fun" class="hidden p-6 space-y-6 fade-in">
-            <div class="text-center mb-6"><h2 class="text-3xl font-black text-slate-800">Español Challenge</h2><p class="text-sm text-slate-500">Level up to prove your skills!</p></div>
-            <div id="level-grid" class="grid gap-3 mb-8"></div>
-            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-slate-800">Leaderboard</h3><span class="text-xs font-bold bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">Top Agents</span></div>
-                <div id="leaderboard-list" class="space-y-2"><p class="text-slate-400 text-xs">No scores yet.</p></div>
-            </div>
-        </div>
-
-        <!-- GAME MODAL -->
-        <div id="game-modal" class="fixed inset-0 z-50 bg-slate-900 flex flex-col p-6 hidden">
-            <button onclick="closeGame()" class="self-start text-white/50 hover:text-white mb-6 flex items-center gap-2"><i data-lucide="arrow-left" class="w-5 h-5"></i> Quit</button>
-            <div id="game-active-view" class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full">
-                <div class="flex justify-between text-slate-400 font-mono mb-4 text-sm"><span>LEVEL <span id="game-level" class="text-white">1</span></span><span>SCORE: <span id="current-score" class="text-green-400">0</span>/10</span></div>
-                <div class="bg-white rounded-3xl p-8 text-center mb-6 shadow-2xl relative transition-all duration-300 transform" id="q-card">
-                    <button onclick="playCurrentAudio()" class="absolute top-4 right-4 text-blue-400 hover:text-blue-600"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
-                    <div class="text-6xl mb-4 animate-bounce" id="q-icon">🍦</div>
-                    <h2 class="text-2xl font-black text-slate-800 mb-2" id="q-word">Ice Cream</h2>
+        <!-- TAB: FUN (SPANISH SPRINT) -->
+        <div id="tab-fun" class="hidden h-full flex flex-col p-6 fade-in">
+            <!-- Game Menu -->
+            <div id="game-menu" class="flex-1 flex flex-col items-center">
+                <div class="w-full glass p-6 rounded-3xl mb-8 flex items-center justify-between border border-white/5">
+                    <div><div class="text-xs text-slate-400 font-bold uppercase">Your Rank</div><div id="user-rank-display" class="text-2xl font-black text-white">Loading...</div><div class="text-xs text-cyan-400 mt-1" id="user-xp-display">0 XP</div></div>
+                    <div class="text-5xl" id="rank-icon">📷</div>
                 </div>
-                <div id="options-container" class="grid gap-3"></div>
+                <button onclick="startGame()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 text-white py-6 rounded-2xl font-black text-2xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all mb-8 border border-white/10 relative overflow-hidden group"><span class="relative z-10">PLAY SPANISH SPRINT</span><div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform"></div></button>
+                <div class="w-full glass rounded-2xl p-5 flex-1 overflow-hidden flex flex-col"><h3 class="font-bold text-slate-300 mb-4 border-b border-white/10 pb-2">Leaderboard</h3><div id="leaderboard-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1"><p class="text-slate-500 text-xs">Loading scores...</p></div></div>
             </div>
-            <!-- WIN SCREEN -->
-            <div id="game-win-view" class="hidden flex-col items-center justify-center h-full text-center">
-                <div class="text-7xl mb-6">🏆</div>
-                <h2 class="text-3xl font-bold mb-2 text-white">Level Complete!</h2>
-                <p class="text-xl text-slate-300 mb-8">You got <span id="final-score" class="text-green-400 font-bold">0</span>/10</p>
-                <button onclick="closeGame()" class="bg-white text-slate-900 px-10 py-4 rounded-full font-black shadow-lg hover:scale-105 transition-transform">Continue</button>
+
+            <!-- Game Board -->
+            <div id="game-board" class="hidden absolute inset-0 bg-slate-900 z-50 flex flex-col p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="bg-slate-800 px-4 py-2 rounded-full border border-white/10 flex gap-2"><span class="text-slate-400 text-xs font-bold">SCORE</span><span id="game-score" class="text-cyan-400 font-black font-mono">0</span></div>
+                    <div class="bg-slate-800 px-4 py-2 rounded-full border border-white/10 flex gap-2"><span class="text-slate-400 text-xs font-bold">COMBO</span><span id="game-combo" class="text-yellow-400 font-black font-mono">x1</span></div>
+                </div>
+                <div class="w-full h-2 bg-slate-800 rounded-full mb-8 overflow-hidden"><div id="timer-bar" class="h-full bg-gradient-to-r from-green-400 to-cyan-400 w-full" style="transition: width 0.1s linear;"></div></div>
+                <div class="flex-1 flex flex-col justify-center max-w-lg mx-auto w-full relative">
+                    <div id="feedback-overlay" class="absolute inset-0 z-10 pointer-events-none flex items-center justify-center text-8xl font-black opacity-0 transition-all duration-200"></div>
+                    <div class="bg-slate-800/80 backdrop-blur border border-white/10 rounded-3xl p-8 text-center mb-6 shadow-2xl relative">
+                        <button onclick="speakWord()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i data-lucide="volume-2" class="w-6 h-6"></i></button>
+                        <div class="text-6xl mb-4" id="q-emoji">🦎</div>
+                        <h2 class="text-3xl font-black text-white mb-2 tracking-tight leading-tight" id="q-text">...</h2>
+                    </div>
+                    <div id="game-options" class="grid grid-cols-1 gap-3"></div>
+                </div>
+                <button onclick="endGame()" class="mt-6 text-slate-500 hover:text-white text-sm font-bold uppercase tracking-widest text-center">Give Up</button>
+            </div>
+
+            <!-- Game Over / Review Modal -->
+            <div id="game-over" class="hidden absolute inset-0 bg-slate-900/95 z-[60] flex flex-col items-center justify-center p-6 text-center">
+                <div class="text-6xl mb-4">🏁</div>
+                <h2 class="text-4xl font-black text-white mb-2">TIME'S UP</h2>
+                <div class="text-slate-400 mb-6">Final Score: <span id="final-score" class="text-white font-bold text-2xl">0</span></div>
+                
+                <!-- Review Section -->
+                <div class="w-full max-w-md bg-white/5 rounded-2xl p-4 mb-6 border border-white/10 text-left">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 border-b border-white/10 pb-1">Review (Missed Words)</h3>
+                    <div id="review-list" class="max-h-40 overflow-y-auto space-y-2 text-sm text-slate-300"></div>
+                </div>
+
+                <div class="text-cyan-400 text-sm font-bold uppercase tracking-widest mb-4" id="xp-gain">+0 XP Earned</div>
+                <button onclick="closeGame()" class="bg-white text-slate-900 px-10 py-4 rounded-full font-black shadow-lg hover:scale-105 transition-transform">CONTINUE</button>
             </div>
         </div>
 
     </main>
 
-    <nav class="bg-white border-t border-slate-200 h-20 fixed bottom-0 w-full z-40 px-6 pb-2 flex justify-between items-center max-w-5xl mx-auto left-0 right-0">
-        <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1 text-blue-600" id="nav-home"><i data-lucide="home" class="w-6 h-6"></i><span class="text-[10px] font-bold">Home</span></button>
-        <button onclick="switchTab('prep')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-prep"><i data-lucide="clipboard-list" class="w-6 h-6"></i><span class="text-[10px] font-bold">Prep</span></button>
-        <button onclick="switchTab('itinerary')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-itinerary"><i data-lucide="map-pin" class="w-6 h-6"></i><span class="text-[10px] font-bold">Plan</span></button>
-        <button onclick="switchTab('chat')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-chat"><i data-lucide="message-circle" class="w-6 h-6"></i><span class="text-[10px] font-bold">Chat</span></button>
-        <button onclick="switchTab('fun')" class="nav-btn flex flex-col items-center gap-1 text-slate-400" id="nav-fun"><i data-lucide="smile" class="w-6 h-6"></i><span class="text-[10px] font-bold">Fun</span></button>
+    <!-- NAV -->
+    <nav class="bg-slate-900/90 backdrop-blur-md border-t border-white/10 h-20 fixed bottom-0 w-full z-40 px-6 pb-2 flex justify-between items-center max-w-5xl mx-auto left-0 right-0">
+        <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1 text-cyan-400" id="nav-home"><i data-lucide="home" class="w-6 h-6"></i><span class="text-[10px] font-bold">Home</span></button>
+        <button onclick="switchTab('prep')" class="nav-btn flex flex-col items-center gap-1 text-slate-500" id="nav-prep"><i data-lucide="clipboard-list" class="w-6 h-6"></i><span class="text-[10px] font-bold">Prep</span></button>
+        <button onclick="switchTab('itinerary')" class="nav-btn flex flex-col items-center gap-1 text-slate-500" id="nav-itinerary"><i data-lucide="map-pin" class="w-6 h-6"></i><span class="text-[10px] font-bold">Plan</span></button>
+        <button onclick="switchTab('chat')" class="nav-btn flex flex-col items-center gap-1 text-slate-500" id="nav-chat"><i data-lucide="message-circle" class="w-6 h-6"></i><span class="text-[10px] font-bold">Chat</span></button>
+        <button onclick="switchTab('fun')" class="nav-btn flex flex-col items-center gap-1 text-slate-500" id="nav-fun"><i data-lucide="gamepad-2" class="w-6 h-6"></i><span class="text-[10px] font-bold">Play</span></button>
     </nav>
 
     <script type="module">
@@ -186,9 +212,9 @@
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, doc, updateDoc, setDoc, increment, deleteDoc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // GLOBAL EXPORT
         window.db = null;
-        let auth, currentUser = localStorage.getItem('cubaUser'), editingId = null, completedLevels = [];
+        let auth, currentUser = localStorage.getItem('cubaUser'), editingId = null;
+        let userXP = 0;
 
         try {
             const app = initializeApp(firebaseConfig);
@@ -207,11 +233,12 @@
             document.getElementById('group-selector').classList.add('hidden');
             document.getElementById('member-selector').classList.remove('hidden');
             ['kingston', 'vips', 'lees'].forEach(g => document.getElementById(`list-${g}`).classList.add('hidden'));
-            document.getElementById(`list-${group}`).classList.remove('hidden');
-            document.getElementById(`list-${group}`).innerHTML = people[group].map(p => `
+            const listDiv = document.getElementById(`list-${group}`);
+            listDiv.classList.remove('hidden');
+            listDiv.innerHTML = people[group].map(p => `
                 <div onclick="login('${p.n}')" class="avatar-card group flex flex-col items-center gap-2 cursor-pointer w-24">
-                    <div class="avatar-circle w-20 h-20 rounded-full bg-${p.c}-500 border-4 border-${p.c}-300/30 flex items-center justify-center text-4xl shadow-xl">${p.i}</div>
-                    <span class="text-white font-medium">${p.n}</span>
+                    <div class="avatar-circle w-20 h-20 rounded-full bg-${p.c}-600 border-2 border-white/20 flex items-center justify-center text-4xl shadow-xl hover:bg-${p.c}-500 transition-colors">${p.i}</div>
+                    <span class="text-slate-300 font-medium group-hover:text-white">${p.n}</span>
                 </div>
             `).join('');
             document.getElementById('login-title').innerText = "Select Profile";
@@ -225,92 +252,177 @@
             document.getElementById('header-avatar').innerText = name.charAt(0);
             if(window.db) {
                 const snap = await getDoc(doc(window.db, "users", name));
-                if(snap.exists()) completedLevels = snap.data().completedLevels || [];
-                if(!document.getElementById('tab-fun').classList.contains('hidden')) renderLevels();
+                userXP = snap.exists() ? (snap.data().xp || 0) : 0;
+                updateRankDisplay();
             }
         };
         window.logout = () => { localStorage.removeItem('cubaUser'); location.reload(); };
         if(currentUser) window.login(currentUser);
 
         window.switchTab = (t) => {
-            ['home','prep','itinerary','chat','fun'].forEach(x => { document.getElementById(`tab-${x}`).classList.add('hidden'); document.getElementById(`nav-${x}`).classList.remove('text-blue-600'); document.getElementById(`nav-${x}`).classList.add('text-slate-400'); });
+            ['home','prep','itinerary','chat','fun'].forEach(x => { document.getElementById(`tab-${x}`).classList.add('hidden'); document.getElementById(`nav-${x}`).classList.remove('text-cyan-400'); document.getElementById(`nav-${x}`).classList.add('text-slate-500'); });
             document.getElementById(`tab-${t}`).classList.remove('hidden');
-            document.getElementById(`nav-${t}`).classList.add('text-blue-600'); document.getElementById(`nav-${t}`).classList.remove('text-slate-400');
-            document.getElementById('header-subtitle').innerText = t === 'home' ? 'Family Vacation' : t;
-            if(t==='fun') renderLevels();
+            document.getElementById(`nav-${t}`).classList.add('text-cyan-400'); document.getElementById(`nav-${t}`).classList.remove('text-slate-500');
+            document.getElementById('header-subtitle').innerText = t === 'home' ? 'Dashboard' : t;
         };
 
-        // --- GAME LOGIC ---
-        const questionBank = {
-            1: [
-                {q:"Ice Cream",a:"Helado",w:["Zapato","Gato"],i:"🍦"}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"],i:"🏊"}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"],i:"🏖️"}, 
-                {q:"Cat",a:"Gato",w:["Pato","Zapato"],i:"🐱"}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"],i:"🙏"}, {q:"Sun",a:"Sol",w:["Luna","Mar"],i:"☀️"}, 
-                {q:"Water",a:"Agua",w:["Fuego","Tierra"],i:"💧"}, {q:"Friend",a:"Amigo",w:["Enemigo","Casa"],i:"🤝"}, {q:"Juice",a:"Jugo",w:["Leche","Cafe"],i:"🥤"}, {q:"Hello",a:"Hola",w:["Adios","Gracias"],i:"👋"}
-            ],
-            2: [
-                {q:"Where is the bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"],i:"🚽"}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"],i:"🍔"}, 
-                {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"],i:"🤗"}, {q:"Uncle Bryan sings",a:"Tío Bryan canta",w:["Tío Bryan duerme","Tío Bryan come tacos"],i:"🎤"}, 
-                {q:"Aunt Laura knows everyone",a:"Tía Laura conoce a todos",w:["Tía Laura conoce a nadie","Tía Laura come pizza"],i:"👯‍♀️"}, {q:"The iguana dances",a:"La iguana baila",w:["La iguana come","La iguana duerme"],i:"🦎"}, 
-                {q:"Chicken with rice",a:"Pollo con arroz",w:["Gato con arroz","Zapato con arroz"],i:"🍗"}
-            ],
-            3: [
-                {q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"],i:"🐶"}, {q:"Sophie draws a cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"],i:"✏️"}, 
-                {q:"Nolan climbs the tree",a:"Nolan sube el árbol",w:["Nolan come el árbol","Nolan duerme en el árbol"],i:"🌳"}, {q:"Grandpa is the king",a:"El abuelo es el rey",w:["El abuelo es el gato","El abuelo tiene hambre"],i:"👑"}, 
-                {q:"I like to swim",a:"Me gusta nadar",w:["Me gusta volar","Me gusta correr"],i:"🏊"}
-            ]
+        // --- SPANISH SPRINT GAME ENGINE ---
+        const vocab = [
+            // Survival (30)
+            {q:"Where is bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"],i:"🚽"}, 
+            {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"],i:"🍔"},
+            {q:"Water please",a:"Agua por favor",w:["Fuego por favor","Hola por favor"],i:"💧"},
+            {q:"Chicken",a:"Pollo",w:["Gato","Zapato"],i:"🍗"},
+            {q:"The check please",a:"La cuenta por favor",w:["La playa por favor","El cuento por favor"],i:"🧾"},
+            {q:"Thank you",a:"Gracias",w:["De nada","Por favor"],i:"🙏"},
+            {q:"Good morning",a:"Buenos días",w:["Buenas noches","Hola"],i:"☀️"},
+            {q:"Beach",a:"Playa",w:["Pantalla","Plato"],i:"🏖️"},
+            {q:"Pool",a:"Piscina",w:["Oficina","Cocina"],i:"🏊"},
+            {q:"Beer",a:"Cerveza",w:["Cabeza","Cereza"],i:"🍺"},
+            {q:"Friend",a:"Amigo",w:["Enemigo","Casa"],i:"🤝"},
+            {q:"Help!",a:"¡Ayuda!",w:["¡Hola!","¡Adios!"],i:"🆘"},
+            {q:"How much?",a:"¿Cuánto cuesta?",w:["¿Cómo estás?","¿Qué pasa?"],i:"💰"},
+            {q:"Delicious",a:"Delicioso",w:["Asqueroso","Malo"],i:"😋"},
+            {q:"I don't understand",a:"No entiendo",w:["No como","No bailo"],i:"🤷"},
+            // Silly / Family (Safe Fun)
+            {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"],i:"🤗"},
+            {q:"The monkey has a red butt",a:"El mono tiene el trasero rojo",w:["El mono tiene un sombrero","El mono come bananas"],i:"🐒"},
+            {q:"No karaoke please",a:"No karaoke por favor",w:["Si karaoke por favor","Me gusta cantar"],i:"🎤"},
+            {q:"Uncle Bryan sings in shower",a:"Tío Bryan canta en la ducha",w:["Tío Bryan duerme","Tío Bryan come tacos"],i:"🚿"},
+            {q:"Aunt Laura says hi",a:"Tía Laura dice hola",w:["Tía Laura dice adios","Tía Laura come pizza"],i:"👋"},
+            {q:"Iguana dances",a:"La iguana baila",w:["La iguana come","La iguana duerme"],i:"🦎"},
+            {q:"Nolan climbs tree",a:"Nolan sube el árbol",w:["Nolan come el árbol","Nolan duerme"],i:"🌳"},
+            {q:"Sophie draws cat",a:"Sophie dibuja un gato",w:["Sophie come un gato","Sophie baila con un gato"],i:"✏️"},
+            {q:"Grandpa is king",a:"El abuelo es el rey",w:["El abuelo es el gato","El abuelo tiene hambre"],i:"👑"},
+            {q:"The dog eats tacos",a:"El perro come tacos",w:["El gato come pizza","El perro baila salsa"],i:"🐶"}
+        ];
+
+        let gameTimer, gameInterval, score, combo, currentQ, startTime;
+        let missedWords = [];
+        const GAME_DURATION = 60;
+
+        window.startGame = () => {
+            score = 0; combo = 1; gameTimer = GAME_DURATION; missedWords = [];
+            document.getElementById('game-menu').classList.add('hidden');
+            document.getElementById('game-board').classList.remove('hidden');
+            document.getElementById('game-over').classList.add('hidden');
+            updateUI();
+            nextQuestion();
+            gameInterval = setInterval(gameLoop, 100);
         };
-        const levels = [{id:1, title:"Bronze", icon:"🥉", color:"green", req:0}, {id:2, title:"Silver", icon:"🥈", color:"blue", req:1}, {id:3, title:"Gold", icon:"🥇", color:"purple", req:2}];
-        let activeLvl, qIdx, score, currentQs;
 
-        function renderLevels() {
-            document.getElementById('level-grid').innerHTML = levels.map(l => {
-                const locked = l.req > 0 && !completedLevels.includes(l.req);
-                const mastered = completedLevels.includes(l.id);
-                return `<div onclick="${locked ? '' : `playLevel(${l.id})`}" class="bg-white p-4 rounded-xl flex items-center justify-between border border-slate-100 ${locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-slate-50'} transition-all"><div class="flex items-center gap-4"><div class="text-3xl bg-${l.color}-50 p-3 rounded-full">${l.icon}</div><div><h4 class="font-bold text-lg">${l.title}</h4><p class="text-xs opacity-70">${mastered ? 'Mastered!' : locked ? 'Locked' : 'Ready'}</p></div></div><div>${mastered ? '⭐' : locked ? '🔒' : '▶️'}</div></div>`;
-            }).join('');
+        function gameLoop() {
+            gameTimer -= 0.1;
+            document.getElementById('timer-bar').style.width = `${(gameTimer/GAME_DURATION)*100}%`;
+            if (gameTimer <= 0) endGame();
         }
 
-        window.playLevel = (id) => { 
-            activeLvl = id; currentQs = [...questionBank[id]].sort(()=>0.5-Math.random()).slice(0,10); qIdx = 0; score = 0; 
-            document.getElementById('game-modal').classList.remove('hidden'); document.getElementById('game-active-view').classList.remove('hidden'); document.getElementById('game-win-view').classList.add('hidden'); document.getElementById('game-win-view').classList.remove('flex');
-            renderQuestion(); 
-        };
-        window.closeGame = () => { document.getElementById('game-modal').classList.add('hidden'); renderLevels(); };
-        
-        function renderQuestion() {
-            if (qIdx >= currentQs.length) { finishGame(); return; }
-            const q = currentQs[qIdx];
-            document.getElementById('game-level').innerText = activeLvl; document.getElementById('current-score').innerText = score; document.getElementById('q-word').innerText = q.q; document.getElementById('q-icon').innerText = q.i;
-            const c = document.getElementById('options-container'); c.innerHTML = '';
-            [q.a, ...q.w].sort(()=>0.5-Math.random()).forEach(o => {
-                const btn = document.createElement('button');
-                btn.className = "bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-4 rounded-xl text-lg shadow-sm active:scale-95 transition-all w-full";
-                btn.innerText = o; btn.onclick = () => handleAnswer(o === q.a, btn);
-                c.appendChild(btn);
-            });
+        function nextQuestion() {
+            startTime = Date.now();
+            currentQ = vocab[Math.floor(Math.random() * vocab.length)];
+            document.getElementById('q-emoji').innerText = currentQ.i;
+            document.getElementById('q-text').innerText = currentQ.q;
+            const opts = [currentQ.a, ...currentQ.w].sort(() => 0.5 - Math.random());
+            document.getElementById('game-options').innerHTML = opts.map(o => `
+                <button onclick="handleAnswer('${o}')" class="bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-xl text-lg border border-white/10 transition active:scale-95">${o}</button>
+            `).join('');
         }
 
-        function handleAnswer(correct, btn) {
-            btn.className = correct ? "bg-green-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm w-full pop" : "bg-red-500 text-white font-bold py-4 rounded-xl text-lg shadow-sm w-full";
-            if(correct) { score++; playAudio(currentQs[qIdx].a); }
-            const all = document.getElementById('options-container').children; for(let b of all) b.disabled = true;
-            setTimeout(() => { qIdx++; renderQuestion(); }, 1200);
-        }
-        window.playCurrentAudio = () => playAudio(currentQs[qIdx].a);
-        function playAudio(txt) { const u = new SpeechSynthesisUtterance(txt); u.lang = 'es-ES'; window.speechSynthesis.speak(u); }
+        window.handleAnswer = (ans) => {
+            const timeTaken = (Date.now() - startTime) / 1000;
+            const isCorrect = ans === currentQ.a;
+            
+            if (isCorrect) {
+                // Speed Bonus
+                if (timeTaken < 2) {
+                    showFeedback("⚡ SPEED BONUS!", "text-yellow-400", "text-2xl");
+                    score += 50;
+                    document.body.classList.add('flash');
+                    setTimeout(()=>document.body.classList.remove('flash'), 300);
+                } else {
+                    showFeedback("👍", "text-green-400", "text-8xl");
+                }
 
-        async function finishGame() {
-            document.getElementById('game-active-view').classList.add('hidden');
-            const winView = document.getElementById('game-win-view');
-            winView.classList.remove('hidden'); winView.classList.add('flex');
-            document.getElementById('final-score').innerText = score;
-            if(score >= 8 && !completedLevels.includes(activeLvl)) {
-                completedLevels.push(activeLvl);
-                if(window.db && currentUser) { await setDoc(doc(window.db, "users", currentUser), { completedLevels: completedLevels }, { merge: true }); await setDoc(doc(window.db, "leaderboard", currentUser), { score: increment(100) }, { merge: true }); }
+                score += 100 * combo;
+                combo = Math.min(combo + 1, 5);
+                gameTimer = Math.min(gameTimer + 2, GAME_DURATION);
+                speakWord(); 
+                nextQuestion();
+            } else {
+                missedWords.push(currentQ);
+                gameTimer -= 5;
+                combo = 1;
+                document.getElementById('game-board').classList.add('shake');
+                setTimeout(()=>document.getElementById('game-board').classList.remove('shake'), 400);
+                showFeedback("❌", "text-red-500", "text-8xl");
+                nextQuestion();
             }
+            updateUI();
+        };
+
+        window.speakWord = () => { const u = new SpeechSynthesisUtterance(currentQ.a); u.lang = 'es-ES'; window.speechSynthesis.speak(u); };
+
+        function updateUI() {
+            document.getElementById('game-score').innerText = score;
+            document.getElementById('game-combo').innerText = `x${combo}`;
+            document.getElementById('game-combo').className = combo > 1 ? "text-yellow-400 font-black font-mono animate-pulse" : "text-slate-500 font-black font-mono";
         }
 
-        // --- CHECKLIST & CHAT ---
+        function showFeedback(text, color, size) {
+            const el = document.getElementById('feedback-overlay');
+            el.innerText = text;
+            el.className = `absolute inset-0 z-10 pointer-events-none flex items-center justify-center font-black transition-all duration-300 pop ${color} ${size} opacity-100 scale-100`;
+            setTimeout(() => { el.classList.add('opacity-0', 'scale-50'); }, 500);
+        }
+
+        window.endGame = async () => {
+            clearInterval(gameInterval);
+            document.getElementById('game-board').classList.add('hidden');
+            document.getElementById('game-over').classList.remove('hidden');
+            document.getElementById('game-over').classList.add('flex');
+            document.getElementById('final-score').innerText = score;
+            
+            const reviewDiv = document.getElementById('review-list');
+            if (missedWords.length > 0) {
+                reviewDiv.innerHTML = missedWords.map(m => `
+                    <div class="flex justify-between items-center border-b border-white/5 py-2">
+                        <span class="text-red-300">${m.q}</span>
+                        <span class="text-white font-bold">${m.a}</span>
+                    </div>
+                `).join('');
+            } else {
+                reviewDiv.innerHTML = '<div class="text-center text-green-400 font-bold">Perfect Run! 🎉</div>';
+            }
+
+            const xpEarned = Math.floor(score / 10);
+            document.getElementById('xp-gain').innerText = `+${xpEarned} XP Earned`;
+            
+            userXP += xpEarned;
+            if(window.db && currentUser) {
+                await setDoc(doc(window.db, "users", currentUser), { xp: userXP }, { merge: true });
+                const oldScore = parseInt(document.getElementById(`score-${currentUser}`)?.innerText || "0");
+                if (score > oldScore) await setDoc(doc(window.db, "leaderboard", currentUser), { score: score }, { merge: true });
+            }
+            updateRankDisplay();
+        };
+
+        window.closeGame = () => {
+            document.getElementById('game-over').classList.add('hidden');
+            document.getElementById('game-menu').classList.remove('hidden');
+        };
+
+        function updateRankDisplay() {
+            let rank = "Tourist 📷";
+            if (userXP > 1000) rank = "Backpacker 🎒";
+            if (userXP > 5000) rank = "Local 🏠";
+            if (userXP > 10000) rank = "Guide 🚩";
+            if (userXP > 25000) rank = "El Jefe 🕶️";
+            document.getElementById('user-rank-display').innerText = rank;
+            document.getElementById('user-xp-display').innerText = `${userXP} XP`;
+            document.getElementById('rank-icon').innerText = rank.split(' ').pop();
+        }
+
+        // --- STANDARD APP LOGIC ---
         window.toggleCheck = async (id, val) => { if(!window.db) return; const ref = doc(window.db, "checklist", id); val ? await setDoc(ref, { completedBy: arrayUnion(currentUser) }, { merge: true }) : await updateDoc(ref, { completedBy: arrayRemove(currentUser) }); };
         window.toggleImageInput = () => document.getElementById('image-input-area').classList.toggle('hidden');
         window.postChat = async () => { const t = document.getElementById('chat-input').value.trim(); const i = document.getElementById('img-url-input').value.trim(); if((!t && !i)) return; await addDoc(collection(window.db, "chat"), { user: currentUser, text: t, image: i, timestamp: new Date() }); document.getElementById('chat-input').value = ''; document.getElementById('img-url-input').value = ''; };
@@ -320,6 +432,7 @@
         window.cancelEdit = () => { editingId = null; document.getElementById('chat-input').value = ''; document.getElementById('edit-controls').classList.add('hidden'); document.getElementById('edit-controls').classList.remove('flex'); };
 
         function initListeners() {
+            updateRankDisplay();
             onSnapshot(query(collection(window.db, "chat"), orderBy("timestamp", "asc"), limit(50)), snap => {
                 const c = document.getElementById('chat-container'); c.innerHTML = '';
                 snap.forEach(d => {
@@ -344,19 +457,21 @@
                     const d = snap.docs.find(x => x.id === id)?.data() || {};
                     const doneBy = d.completedBy || [];
                     const isDone = doneBy.includes(currentUser);
-                    const info = doneBy.length ? `<div class="mt-1 text-[10px] text-green-600 font-bold bg-green-50 p-1 rounded inline-block">✅ ${doneBy.join(', ')}</div>` : '';
-                    c.innerHTML += `<div onclick="toggleCheck('${id}', ${!isDone})" class="p-4 cursor-pointer hover:bg-slate-50 border-b border-slate-50"><div class="flex justify-between"><span class="font-medium text-slate-700 ${isDone?'line-through opacity-50':''}">${i}</span><div class="w-6 h-6 rounded-full border-2 ${isDone?'bg-green-500 border-green-500':'border-slate-300'} flex items-center justify-center">${isDone?'<i data-lucide="check" class="w-4 h-4 text-white"></i>':''}</div></div>${info}</div>`;
+                    const info = doneBy.length ? `<div class="mt-1 text-[10px] text-green-400 font-bold bg-green-900/30 p-1 rounded inline-block">✅ ${doneBy.join(', ')}</div>` : '';
+                    c.innerHTML += `<div onclick="toggleCheck('${id}', ${!isDone})" class="p-4 cursor-pointer hover:bg-white/5 border-b border-white/5"><div class="flex justify-between"><span class="font-medium text-slate-300 ${isDone?'line-through opacity-50':''}">${i}</span><div class="w-6 h-6 rounded-full border-2 ${isDone?'bg-green-500 border-green-500':'border-slate-500'} flex items-center justify-center">${isDone?'<i data-lucide="check" class="w-4 h-4 text-white"></i>':''}</div></div>${info}</div>`;
                 });
                 lucide.createIcons();
             });
             onSnapshot(query(collection(window.db, "leaderboard"), orderBy("score", "desc")), snap => {
                 const l = document.getElementById('leaderboard-list'); l.innerHTML = '';
-                let i=1; snap.forEach(d => l.innerHTML += `<div class="flex justify-between items-center p-2 border-b border-slate-50 last:border-0"><span class="text-xs text-slate-400 font-mono w-6">#${i++}</span><span class="font-bold text-slate-700 text-sm flex-1">${d.id}</span><span class="font-mono font-bold text-green-500">${d.data().score}</span></div>`);
+                let i=1; snap.forEach(d => {
+                    l.innerHTML += `<div class="flex justify-between items-center p-3 bg-white/5 rounded-xl mb-2"><div class="flex items-center gap-3"><span class="font-mono text-slate-500 w-4">#${i++}</span><span class="font-bold text-slate-200">${d.id}</span></div><span id="score-${d.id}" class="font-black text-cyan-400 font-mono text-lg">${d.data().score}</span></div>`; 
+                });
             });
         }
 
         const itineraryData = [{day:"Fri Feb 13",title:"Heading Out",icon:"hotel",color:"text-blue-400",desc:"Drive to YYZ. Check in Marriott. Pizza Night."},{day:"Sat Feb 14",title:"Flight Day",icon:"plane",color:"text-blue-400",desc:"TS556 -> Varadero. Shuttle to Resort. Arrival!"},{day:"Sun Feb 15",title:"Pool Recon",icon:"sun",color:"text-orange-400",desc:"Scout the best pool spots & buffet locations."},{day:"Mon Feb 16",title:"Beach Day",icon:"umbrella",color:"text-teal-400",desc:"Ocean swim & Kids Club sign up."},{day:"Tue Feb 17",title:"Grandpa's 80th!",icon:"crown",color:"text-yellow-400",desc:"The Main Event. Big family dinner celebration."},{day:"Wed Feb 18",title:"Sandcastle Wars",icon:"palmtree",color:"text-green-400",desc:"Kingston Crew vs Lee's. Who builds it best?"},{day:"Thu Feb 19",title:"Free Day",icon:"camera",color:"text-purple-400",desc:"Relax at swim-up bar or excursion."},{day:"Fri Feb 20",title:"Last Sunset",icon:"heart",color:"text-red-400",desc:"Final full day. Group photos on beach."},{day:"Sat Feb 21",title:"Return Home",icon:"plane",color:"text-blue-400",desc:"TS557 -> YYZ. Overnight Marriott."},{day:"Sun Feb 22",title:"Home",icon:"home",color:"text-slate-400",desc:"Breakfast and drive back to Kingston."}];
-        function renderItinerary() { document.getElementById('itinerary-list').innerHTML = itineraryData.map(i => `<div class="glass rounded-2xl p-5 flex gap-4 border border-slate-100 bg-white"><div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1"><i data-lucide="${i.icon}" class="${i.color} w-6 h-6"></i><div class="w-px h-full bg-slate-100 my-2"></div></div><div><h4 class="font-bold text-slate-800 text-lg">${i.title}</h4><p class="text-xs font-bold text-slate-400 uppercase mb-2">${i.day}</p><p class="text-slate-500 text-sm leading-relaxed">${i.desc}</p></div></div>`).join(''); }
+        function renderItinerary() { document.getElementById('itinerary-list').innerHTML = itineraryData.map(i => `<div class="glass rounded-2xl p-5 flex gap-4 border border-white/5 bg-slate-800/50"><div class="flex flex-col items-center gap-2 min-w-[3rem] pt-1"><i data-lucide="${i.icon}" class="${i.color} w-6 h-6"></i><div class="w-px h-full bg-white/10 my-2"></div></div><div><h4 class="font-bold text-white text-lg">${i.title}</h4><p class="text-xs font-bold text-slate-400 uppercase mb-2">${i.day}</p><p class="text-slate-400 text-sm leading-relaxed">${i.desc}</p></div></div>`).join(''); }
 
         window.onload = () => {
             const updateTime = () => { const diff = new Date("2026-02-13T00:00:00").getTime() - new Date().getTime(); document.getElementById('cd-days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24)); document.getElementById('cd-hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); document.getElementById('cd-mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)); document.getElementById('cd-secs').innerText = Math.floor((diff % (1000 * 60)) / 1000); };
