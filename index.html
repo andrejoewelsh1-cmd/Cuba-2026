@@ -9,22 +9,22 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; transition: background 0.5s ease, color 0.3s ease; }
         
-        /* CSS Variables */
+        /* Variables */
         :root {
             --bg-app: #0f172a; --text-main: #f1f5f9; --text-muted: #94a3b8;
             --bg-card: rgba(255, 255, 255, 0.05); --border-card: rgba(255, 255, 255, 0.1);
-            --bg-nav: rgba(15, 23, 42, 0.9); --accent: #22d3ee;
+            --bg-nav: rgba(15, 23, 42, 0.95); --accent: #22d3ee;
         }
         [data-theme="light"] {
             --bg-app: #f8fafc; --text-main: #1e293b; --text-muted: #64748b;
             --bg-card: #ffffff; --border-card: #e2e8f0;
-            --bg-nav: rgba(255, 255, 255, 0.9); --accent: #2563eb;
+            --bg-nav: rgba(255, 255, 255, 0.95); --accent: #2563eb;
         }
         [data-theme="cuba"] {
             --bg-app: linear-gradient(135deg, #2dd4bf 0%, #facc15 100%);
             --text-main: #0f172a; --text-muted: #334155;
             --bg-card: rgba(255, 255, 255, 0.6); --border-card: rgba(255, 255, 255, 0.4);
-            --bg-nav: rgba(255, 255, 255, 0.8); --accent: #ec4899;
+            --bg-nav: rgba(255, 255, 255, 0.85); --accent: #ec4899;
         }
 
         .app-bg { background: var(--bg-app); color: var(--text-main); }
@@ -36,6 +36,8 @@
 
         .fade-in { animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
         .chat-bubble { max-width: 85%; word-wrap: break-word; }
@@ -91,7 +93,7 @@
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto pb-24 no-scrollbar" id="main-scroll">
+    <main class="flex-1 overflow-y-auto pb-40 no-scrollbar" id="main-scroll">
         <div id="error-banner" class="hidden bg-red-500/20 text-red-400 p-3 text-xs text-center font-bold border-b border-red-500/20"></div>
 
         <!-- HOME -->
@@ -137,7 +139,7 @@
 
         <!-- CHAT -->
         <div id="tab-chat" class="hidden flex flex-col h-full fade-in pb-0">
-            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-24"><div class="text-center app-text-muted text-xs mt-10">Secure channel open...</div></div>
+            <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-3 pb-40"><div class="text-center app-text-muted text-xs mt-10">Secure channel open...</div></div>
             <div class="p-4 app-nav fixed bottom-20 w-full max-w-5xl left-0 right-0 mx-auto z-20">
                 <div id="edit-controls" class="hidden justify-between text-xs text-orange-400 mb-2 px-1"><span>Editing...</span><button onclick="cancelEdit()" class="app-text-muted">Cancel</button></div>
                 <div class="flex gap-2"><button onclick="toggleImageInput()" class="app-text-muted hover:text-cyan-400 p-2"><i data-lucide="image" class="w-6 h-6"></i></button><input type="text" id="chat-input" placeholder="Message..." class="flex-1 app-card app-text rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"><button onclick="postChat()" class="bg-cyan-600 hover:bg-cyan-500 text-white rounded-full p-2 w-10 h-10 flex items-center justify-center shadow-lg"><i data-lucide="send" class="w-4 h-4"></i></button></div>
@@ -146,30 +148,36 @@
         </div>
 
         <!-- FUN (SPANISH SPRINT) -->
-        <div id="tab-fun" class="hidden h-full flex flex-col p-6 fade-in">
+        <div id="tab-fun" class="hidden h-full flex flex-col p-6 fade-in overflow-y-auto pb-40">
             <div id="game-menu" class="flex-1 flex flex-col items-center">
                 <div class="w-full app-card p-6 rounded-3xl mb-8 flex items-center justify-between">
                     <div><div class="text-xs app-text-muted font-bold uppercase">Your Rank</div><div id="user-rank-display" class="text-2xl font-black app-text">Loading...</div><div class="text-xs text-cyan-400 mt-1" id="user-total-score">Total Score: 0</div></div><div class="text-5xl" id="rank-icon">📷</div>
                 </div>
                 
-                <!-- LEVELS GRID -->
-                <div id="level-grid" class="grid gap-3 w-full mb-8">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="level-grid" class="grid gap-3 w-full mb-8"></div>
 
                 <div class="w-full app-card rounded-2xl p-5 flex-1 overflow-hidden flex flex-col"><h3 class="font-bold app-text-muted mb-4 border-b border-white/10 pb-2">Leaderboard</h3><div id="leaderboard-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1"><p class="app-text-muted text-xs">Loading scores...</p></div></div>
                 
-                <!-- ADMIN PANEL (Andre Only) -->
-                <div id="admin-panel" class="hidden w-full mt-4 p-4 border border-red-500/30 rounded-xl bg-red-900/10">
-                    <h3 class="text-red-400 font-bold text-xs uppercase tracking-widest mb-2">Admin Tools</h3>
-                    <div class="flex gap-2">
-                        <button onclick="resetLeaderboard()" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold py-2 px-4 rounded-lg flex-1">Reset All</button>
-                        <button onclick="resetMyScore()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold py-2 px-4 rounded-lg flex-1">Reset Mine</button>
+                <!-- ADMIN PANEL -->
+                <div id="admin-panel" class="hidden w-full mt-4 p-4 border border-red-500/30 rounded-xl bg-red-900/10 mb-20">
+                    <h3 class="text-red-400 font-bold text-xs uppercase tracking-widest mb-3">Admin Command</h3>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="resetLeaderboard()" class="bg-red-600/20 text-red-300 border border-red-500/50 text-xs font-bold py-2 px-4 rounded-lg hover:bg-red-600 hover:text-white transition-colors">⚠️ Reset All Scores</button>
+                        
+                        <div class="border-t border-red-500/20 pt-3">
+                            <label class="text-[10px] text-red-300 uppercase font-bold block mb-1">Manual Score Edit</label>
+                            <div class="flex gap-2">
+                                <select id="admin-user-select" class="bg-slate-900 text-white text-xs p-2 rounded border border-white/10 flex-1 outline-none focus:border-red-500">
+                                    <option value="">Select User...</option>
+                                </select>
+                                <input type="number" id="admin-new-score" placeholder="Score" class="bg-slate-900 text-white text-xs p-2 rounded w-20 border border-white/10 outline-none focus:border-red-500">
+                                <button onclick="adminUpdateScore()" class="bg-red-600 text-white text-xs font-bold px-3 rounded hover:bg-red-500">Set</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Game Board -->
             <div id="game-board" class="hidden absolute inset-0 app-bg z-50 flex flex-col p-6">
                 <div class="flex justify-between items-center mb-6"><div class="bg-slate-800 px-4 py-2 rounded-full border border-white/10 flex gap-2"><span class="text-slate-400 text-xs font-bold">SCORE</span><span id="game-score" class="text-cyan-400 font-black font-mono">0</span></div><div class="bg-slate-800 px-4 py-2 rounded-full border border-white/10 flex gap-2"><span class="text-slate-400 text-xs font-bold">COMBO</span><span id="game-combo" class="text-yellow-400 font-black font-mono">x1</span></div></div>
                 <div class="w-full h-2 bg-slate-800 rounded-full mb-8 overflow-hidden"><div id="timer-bar" class="h-full bg-gradient-to-r from-green-400 to-cyan-400 w-full" style="transition: width 0.1s linear;"></div></div>
@@ -184,7 +192,6 @@
                 <button onclick="endGame()" class="mt-6 app-text-muted hover:app-text text-sm font-bold uppercase tracking-widest text-center">Give Up</button>
             </div>
 
-            <!-- Game Over -->
             <div id="game-over" class="hidden absolute inset-0 bg-slate-900/95 z-[60] flex flex-col items-center justify-center p-6 text-center">
                 <div class="text-6xl mb-4">🏁</div><h2 class="text-4xl font-black text-white mb-2">TIME'S UP</h2><div class="text-slate-400 mb-6">Score: <span id="final-score" class="text-white font-bold text-2xl">0</span></div>
                 <div id="score-message" class="text-yellow-400 font-bold text-lg mb-6"></div>
@@ -248,8 +255,7 @@
             const snap = await getDoc(doc(window.db, "users", currentUser));
             if(snap.exists()) userData = snap.data();
             if(!userData.scores) userData.scores = {1:0, 2:0, 3:0};
-            updateRankDisplay();
-            renderLevels();
+            updateRankDisplay(); renderLevels();
         }
 
         window.switchTab = (t) => {
@@ -268,7 +274,7 @@
             else { b.className="app-card p-5 rounded-2xl border-l-4 border-blue-500 shadow-lg mb-4 flex items-center gap-4"; document.getElementById('sb-icon').innerText="🏖️"; document.getElementById('sb-title').innerText="Get Ready"; document.getElementById('sb-desc').innerText="Check packing list."; }
         }
 
-        // --- GAME ENGINE (ANTI-CHEAT) ---
+        // --- GAME ENGINE ---
         const questionBank = {
             1: [{q:"Ice Cream",a:"Helado",w:["Zapato","Gato"],i:"🍦"}, {q:"Pool",a:"Piscina",w:["Oficina","Cocina"],i:"🏊"}, {q:"Beach",a:"Playa",w:["Pantalla","Banana"],i:"🏖️"}, {q:"Cat",a:"Gato",w:["Pato","Zapato"],i:"🐱"}, {q:"Thank You",a:"Gracias",w:["De Nada","Por Favor"],i:"🙏"}, {q:"Sun",a:"Sol",w:["Luna","Mar"],i:"☀️"}, {q:"Water",a:"Agua",w:["Fuego","Tierra"],i:"💧"}, {q:"Friend",a:"Amigo",w:["Enemigo","Casa"],i:"🤝"}, {q:"Juice",a:"Jugo",w:["Leche","Cafe"],i:"🥤"}, {q:"Hello",a:"Hola",w:["Adios","Gracias"],i:"👋"}],
             2: [{q:"Where is bathroom?",a:"¿Dónde está el baño?",w:["¿Dónde está el gato?","Me gusta el baño"],i:"🚽"}, {q:"I am hungry",a:"Tengo hambre",w:["Tengo hombre","Soy una hamburguesa"],i:"🍔"}, {q:"Water please",a:"Agua por favor",w:["Fuego por favor","Hola por favor"],i:"💧"}, {q:"Chicken",a:"Pollo",w:["Gato","Zapato"],i:"🍗"}, {q:"The check please",a:"La cuenta por favor",w:["La playa por favor","El cuento por favor"],i:"🧾"}, {q:"Beer",a:"Cerveza",w:["Cabeza","Cereza"],i:"🍺"}, {q:"Lala loves hugs",a:"Lala ama los abrazos",w:["Lala ama los zapatos","Lala odia los abrazos"],i:"🤗"}, {q:"Uncle Bryan sings",a:"Tío Bryan canta",w:["Tío Bryan duerme","Tío Bryan come tacos"],i:"🎤"}],
@@ -281,131 +287,47 @@
             const grid = document.getElementById('level-grid');
             grid.innerHTML = levels.map(l => {
                 const myScore = userData.scores[l.id] || 0;
-                const mastered = myScore >= 800; // 8/10 approx
-                // Logic: Level 1 always open. Level 2 needs L1 mastery. Level 3 needs L2 mastery.
+                const mastered = myScore >= 800; 
                 const locked = l.id > 1 && (userData.scores[l.id-1] || 0) < 800;
-                
-                return `
-                <div onclick="${locked ? '' : `playLevel(${l.id})`}" class="app-card p-4 rounded-xl flex items-center justify-between border border-white/10 ${locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-white/5'} transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="text-3xl bg-${l.c}-500/20 p-3 rounded-full text-${l.c}-400">${l.i}</div>
-                        <div>
-                            <h4 class="font-bold text-lg app-text">${l.t} League</h4>
-                            <p class="text-xs app-text-muted">Best Score: <span class="font-mono text-cyan-400">${myScore}</span></p>
-                        </div>
-                    </div>
-                    <div class="text-xl">${mastered ? '⭐' : locked ? '🔒' : '▶️'}</div>
-                </div>`;
+                return `<div onclick="${locked ? '' : `playLevel(${l.id})`}" class="app-card p-4 rounded-xl flex items-center justify-between border border-white/10 ${locked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-white/5'} transition-all"><div class="flex items-center gap-4"><div class="text-3xl bg-${l.c}-500/20 p-3 rounded-full text-${l.c}-400">${l.i}</div><div><h4 class="font-bold text-lg app-text">${l.t} League</h4><p class="text-xs app-text-muted">Best Score: <span class="font-mono text-cyan-400">${myScore}</span></p></div></div><div class="text-xl">${mastered ? '⭐' : locked ? '🔒' : '▶️'}</div></div>`;
             }).join('');
         }
 
-        window.playLevel = (lvl) => {
-            activeLevelId = lvl;
-            score = 0; combo = 1; gameTimer = 60; missedWords = [];
-            document.getElementById('game-menu').classList.add('hidden');
-            document.getElementById('game-board').classList.remove('hidden');
-            document.getElementById('game-over').classList.add('hidden');
-            updateUI(); nextQuestion(); gameInterval = setInterval(gameLoop, 100);
-        };
-
-        function gameLoop() {
-            gameTimer -= 0.1; document.getElementById('timer-bar').style.width = `${(gameTimer/60)*100}%`;
-            if(gameTimer <= 0) endGame();
-        }
-
-        function nextQuestion() {
-            startTime = Date.now();
-            const pool = questionBank[activeLevelId];
-            currentQ = pool[Math.floor(Math.random() * pool.length)];
-            document.getElementById('q-emoji').innerText = currentQ.i;
-            document.getElementById('q-text').innerText = currentQ.q;
-            const opts = [currentQ.a, ...currentQ.w].sort(() => 0.5 - Math.random());
-            document.getElementById('game-options').innerHTML = opts.map(o => `<button onclick="handleAnswer('${o}')" class="bg-white/10 hover:bg-white/20 app-text font-bold py-4 rounded-xl text-lg border border-white/10 transition active:scale-95">${o}</button>`).join('');
-        }
-
+        window.playLevel = (lvl) => { activeLevelId = lvl; score = 0; combo = 1; gameTimer = 60; missedWords = []; document.getElementById('game-menu').classList.add('hidden'); document.getElementById('game-board').classList.remove('hidden'); document.getElementById('game-over').classList.add('hidden'); updateUI(); nextQuestion(); gameInterval = setInterval(gameLoop, 100); };
+        function gameLoop() { gameTimer -= 0.1; document.getElementById('timer-bar').style.width = `${(gameTimer/60)*100}%`; if(gameTimer <= 0) endGame(); }
+        function nextQuestion() { startTime = Date.now(); const pool = questionBank[activeLevelId]; currentQ = pool[Math.floor(Math.random() * pool.length)]; document.getElementById('q-emoji').innerText = currentQ.i; document.getElementById('q-text').innerText = currentQ.q; const opts = [currentQ.a, ...currentQ.w].sort(() => 0.5 - Math.random()); document.getElementById('game-options').innerHTML = opts.map(o => `<button onclick="handleAnswer('${o}')" class="bg-white/10 hover:bg-white/20 app-text font-bold py-4 rounded-xl text-lg border border-white/10 transition active:scale-95">${o}</button>`).join(''); }
         window.handleAnswer = (ans) => {
-            const timeTaken = (Date.now() - startTime) / 1000;
-            const isCorrect = ans === currentQ.a;
-            if (isCorrect) {
-                const pts = timeTaken < 2 ? 150 : 100;
-                score += pts * combo;
-                combo = Math.min(combo + 1, 5);
-                showFeedback(timeTaken < 2 ? "⚡ SPEED!" : "👍", "text-green-400");
-                speakWord(); nextQuestion();
-            } else {
-                missedWords.push(currentQ);
-                gameTimer -= 5; combo = 1;
-                document.getElementById('game-board').classList.add('shake'); setTimeout(()=>document.getElementById('game-board').classList.remove('shake'), 400);
-                showFeedback("❌", "text-red-500"); nextQuestion();
-            }
+            const timeTaken = (Date.now() - startTime) / 1000; const isCorrect = ans === currentQ.a;
+            if (isCorrect) { const pts = timeTaken < 2 ? 150 : 100; score += pts * combo; combo = Math.min(combo + 1, 5); showFeedback(timeTaken < 2 ? "⚡ SPEED!" : "👍", "text-green-400"); speakWord(); nextQuestion(); } 
+            else { missedWords.push(currentQ); gameTimer -= 5; combo = 1; document.getElementById('game-board').classList.add('shake'); setTimeout(()=>document.getElementById('game-board').classList.remove('shake'), 400); showFeedback("❌", "text-red-500"); nextQuestion(); }
             updateUI();
         };
-
         window.speakWord = () => { const u = new SpeechSynthesisUtterance(currentQ.a); u.lang = 'es-ES'; window.speechSynthesis.speak(u); };
         function updateUI() { document.getElementById('game-score').innerText = score; document.getElementById('game-combo').innerText = `x${combo}`; }
         function showFeedback(t, c) { const el = document.getElementById('feedback-overlay'); el.innerText = t; el.className = `absolute inset-0 z-10 flex items-center justify-center font-black transition-all duration-300 pop ${c} text-6xl opacity-100 scale-100`; setTimeout(() => el.classList.add('opacity-0', 'scale-50'), 500); }
-
         window.endGame = async () => {
-            clearInterval(gameInterval);
-            document.getElementById('game-board').classList.add('hidden');
-            document.getElementById('game-over').classList.remove('hidden'); document.getElementById('game-over').classList.add('flex');
-            document.getElementById('final-score').innerText = score;
-            
-            // Logic: Update Best Score for this level
-            const oldBest = userData.scores[activeLevelId] || 0;
-            let msg = `You got ${score}.`;
-            if (score > oldBest) {
-                userData.scores[activeLevelId] = score;
-                msg = "🎉 NEW RECORD!";
-                // Update DB
-                if(window.db && currentUser) {
-                    await setDoc(doc(window.db, "users", currentUser), { scores: userData.scores }, { merge: true });
-                    // Leaderboard is SUM of bests
-                    const total = Object.values(userData.scores).reduce((a,b)=>a+b, 0);
-                    await setDoc(doc(window.db, "leaderboard", currentUser), { score: total }, { merge: true });
-                }
-            } else {
-                msg = `Best: ${oldBest}. Try again to beat it!`;
-            }
+            clearInterval(gameInterval); document.getElementById('game-board').classList.add('hidden'); document.getElementById('game-over').classList.remove('hidden'); document.getElementById('game-over').classList.add('flex'); document.getElementById('final-score').innerText = score;
+            const oldBest = userData.scores[activeLevelId] || 0; let msg = `You got ${score}.`;
+            if (score > oldBest) { userData.scores[activeLevelId] = score; msg = "🎉 NEW RECORD!"; if(window.db && currentUser) { await setDoc(doc(window.db, "users", currentUser), { scores: userData.scores }, { merge: true }); const total = Object.values(userData.scores).reduce((a,b)=>a+b, 0); await setDoc(doc(window.db, "leaderboard", currentUser), { score: total }, { merge: true }); } }
             document.getElementById('score-message').innerText = msg;
-            
-            const r = document.getElementById('review-list');
-            r.innerHTML = missedWords.length ? missedWords.map(m=>`<div class="flex justify-between border-b border-white/10 py-1"><span class="text-red-400">${m.q}</span><span class="app-text">${m.a}</span></div>`).join('') : '<div class="text-green-400 text-center">Perfect!</div>';
+            const r = document.getElementById('review-list'); r.innerHTML = missedWords.length ? missedWords.map(m=>`<div class="flex justify-between border-b border-white/10 py-1"><span class="text-red-400">${m.q}</span><span class="app-text">${m.a}</span></div>`).join('') : '<div class="text-green-400 text-center">Perfect!</div>';
             updateRankDisplay();
         };
-
         window.closeGame = () => { document.getElementById('game-over').classList.add('hidden'); document.getElementById('game-menu').classList.remove('hidden'); renderLevels(); };
-
-        function updateRankDisplay() {
-            const total = Object.values(userData.scores || {}).reduce((a,b)=>a+b, 0);
-            let rank = "Tourist 📷";
-            if(total > 1000) rank = "Backpacker 🎒"; if(total > 3000) rank = "Local 🏠"; if(total > 6000) rank = "Guide 🚩"; if(total > 10000) rank = "El Jefe 🕶️";
-            document.getElementById('user-rank-display').innerText = rank;
-            document.getElementById('user-total-score').innerText = `Total Score: ${total}`;
-            document.getElementById('rank-icon').innerText = rank.split(' ').pop();
-        }
+        function updateRankDisplay() { const total = Object.values(userData.scores || {}).reduce((a,b)=>a+b, 0); let rank = "Tourist 📷"; if(total > 1000) rank = "Backpacker 🎒"; if(total > 3000) rank = "Local 🏠"; if(total > 6000) rank = "Guide 🚩"; if(total > 10000) rank = "El Jefe 🕶️"; document.getElementById('user-rank-display').innerText = rank; document.getElementById('user-total-score').innerText = `Total Score: ${total}`; document.getElementById('rank-icon').innerText = rank.split(' ').pop(); }
 
         // --- ADMIN TOOLS ---
-        window.resetLeaderboard = async () => {
-            if(!confirm("Reset ALL scores for EVERYONE?")) return;
+        window.resetLeaderboard = async () => { if(!confirm("Reset ALL scores for EVERYONE?")) return; if(!window.db) return; const batch = writeBatch(window.db); const snaps = await getDocs(collection(window.db, "leaderboard")); snaps.forEach(d => batch.delete(d.ref)); const uSnaps = await getDocs(collection(window.db, "users")); uSnaps.forEach(d => batch.update(d.ref, { scores: {1:0, 2:0, 3:0}, xp: 0 })); await batch.commit(); alert("Leaderboard wiped."); location.reload(); };
+        window.adminUpdateScore = async () => {
+            const user = document.getElementById('admin-user-select').value;
+            const score = parseInt(document.getElementById('admin-new-score').value);
+            if(!user || isNaN(score)) return alert("Select user & score");
             if(!window.db) return;
-            const batch = writeBatch(window.db);
-            const snaps = await getDocs(collection(window.db, "leaderboard"));
-            snaps.forEach(d => batch.delete(d.ref));
-            // Also wipe users scores
-            const uSnaps = await getDocs(collection(window.db, "users"));
-            uSnaps.forEach(d => batch.update(d.ref, { scores: {1:0, 2:0, 3:0}, xp: 0 }));
-            await batch.commit();
-            alert("Leaderboard wiped.");
-            location.reload();
-        };
-        window.resetMyScore = async () => {
-            if(!window.db) return;
-            userData.scores = {1:0, 2:0, 3:0};
-            await setDoc(doc(window.db, "users", currentUser), { scores: userData.scores }, { merge: true });
-            await setDoc(doc(window.db, "leaderboard", currentUser), { score: 0 }, { merge: true });
-            alert("Your score reset.");
-            updateRankDisplay(); renderLevels();
+            // Just update total score on leaderboard for now (simplified)
+            await setDoc(doc(window.db, "leaderboard", user), { score: score }, { merge: true });
+            // Also hack their Level 1 score so it persists in their user record logic
+            await setDoc(doc(window.db, "users", user), { scores: {1:score, 2:0, 3:0} }, { merge: true });
+            alert(`Updated ${user} to ${score}`);
         };
 
         // --- STANDARD LOGIC ---
@@ -448,8 +370,12 @@
                 lucide.createIcons();
             });
             onSnapshot(query(collection(window.db, "leaderboard"), orderBy("score", "desc")), snap => {
-                const l = document.getElementById('leaderboard-list'); l.innerHTML = '';
-                let i=1; snap.forEach(d => { l.innerHTML += `<div class="flex justify-between items-center p-3 bg-white/5 rounded-xl mb-2"><div class="flex items-center gap-3"><span class="font-mono app-text-muted w-4">#${i++}</span><span class="font-bold app-text">${d.id}</span></div><span id="score-${d.id}" class="font-black text-cyan-400 font-mono text-lg">${d.data().score}</span></div>`; });
+                const l = document.getElementById('leaderboard-list'); const sel = document.getElementById('admin-user-select');
+                l.innerHTML = ''; if(sel) sel.innerHTML = '<option value="">Select User...</option>';
+                let i=1; snap.forEach(d => {
+                    l.innerHTML += `<div class="flex justify-between items-center p-3 bg-white/5 rounded-xl mb-2"><div class="flex items-center gap-3"><span class="font-mono app-text-muted w-4">#${i++}</span><span class="font-bold app-text">${d.id}</span></div><span id="score-${d.id}" class="font-black text-cyan-400 font-mono text-lg">${d.data().score}</span></div>`; 
+                    if(sel) sel.innerHTML += `<option value="${d.id}">${d.id}</option>`;
+                });
             });
         }
 
